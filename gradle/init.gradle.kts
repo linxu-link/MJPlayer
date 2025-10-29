@@ -17,7 +17,6 @@ initscript {
 rootProject {
     subprojects {  // 遍历所有子项目
         apply<com.diffplug.gradle.spotless.SpotlessPlugin>()  // 应用 Spotless 插件
-
         // 配置 Spotless 插件规则
         extensions.configure<com.diffplug.gradle.spotless.SpotlessExtension> {
             // 配置 Kotlin 代码格式化
@@ -26,6 +25,8 @@ rootProject {
                 targetExclude("**/build/**/*.kt")
                 targetExclude("**/test/**/*.kt")
                 targetExclude("**/androidTest/**/*.kt")
+                targetExclude("src/test/**/*.kt")
+                targetExclude("src/androidTest/**/*.kt")
 
                 ktlint(ktlintVersion)
                     .editorConfigOverride(
@@ -35,7 +36,6 @@ rootProject {
                             "indent_size" to "4"
                         )
                     )
-
                 licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
             }
 
