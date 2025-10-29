@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui
 
 import androidx.compose.runtime.Composable
@@ -35,15 +19,13 @@ fun MJNaviGraph(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     startDestination: String = MJPlayerDestinations.VIDEO_LIST_ROUTE,
 ) {
-
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
 
     NavHost(
         navController = navController,
-        startDestination = startDestination
+        startDestination = startDestination,
     ) {
-
         composable(MJPlayerDestinations.VIDEO_LIST_ROUTE) {
             VideoListScreen(
                 onNavigateToSearch = {
@@ -52,13 +34,13 @@ fun MJNaviGraph(
                 onNavigateToSettings = { itemId ->
                     navController.navigate(MJPlayerDestinations.SETTINGS_ROUTE)
                 },
-                onVideoOnclick = {}
+                onVideoOnclick = {},
             )
         }
 
         composable(MJPlayerDestinations.SEARCH_ROUTE) { backStackEntry ->
             SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
             )
         }
 
@@ -68,15 +50,14 @@ fun MJNaviGraph(
 
             PlayerScreen(
                 itemId = itemId,
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
             )
         }
 
         composable(MJPlayerDestinations.SETTINGS_ROUTE) {
             SettingsScreen(
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
             )
         }
-
     }
 }

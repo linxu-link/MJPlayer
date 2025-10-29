@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.view.player
 
 import android.content.Context
@@ -56,7 +40,6 @@ class ExoplayerControllerImpl(context: Context, private val config: PlayerConfig
     }
 
     override fun initializePlayer() {
-
         exoPlayer.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 val playbackState = when (state) {
@@ -72,7 +55,7 @@ class ExoplayerControllerImpl(context: Context, private val config: PlayerConfig
             override fun onPositionDiscontinuity(
                 oldPosition: Player.PositionInfo,
                 newPosition: Player.PositionInfo,
-                reason: Int
+                reason: Int,
             ) {
                 super.onPositionDiscontinuity(oldPosition, newPosition, reason)
                 handlePositionUpdate(newPosition.positionMs, exoPlayer.duration)
@@ -93,7 +76,6 @@ class ExoplayerControllerImpl(context: Context, private val config: PlayerConfig
                 // 更新缓冲状态和当前播放位置
                 handleBufferingUpdate(player.bufferedPercentage)
             }
-
         })
     }
 
@@ -138,7 +120,7 @@ private fun PlayerConfig.copy(
     repeatMode: Int = this.repeatMode,
     seekForwardIncrementMs: Long = this.seekForwardIncrementMs,
     seekBackIncrementMs: Long = this.seekBackIncrementMs,
-    cacheConfig: PlayerConfig.CacheConfig? = this.cacheConfig
+    cacheConfig: PlayerConfig.CacheConfig? = this.cacheConfig,
 ) = PlayerConfig(repeatMode, seekForwardIncrementMs, seekBackIncrementMs, cacheConfig)
 
 // 播放器配置类
@@ -146,14 +128,13 @@ class PlayerConfig(
     val repeatMode: Int = Player.REPEAT_MODE_OFF,
     val seekForwardIncrementMs: Long = 15_000,
     val seekBackIncrementMs: Long = 5_000,
-    val cacheConfig: CacheConfig? = null
+    val cacheConfig: CacheConfig? = null,
 ) {
 
     class CacheConfig(
         val cacheSize: Long = 100 * 1024 * 1024, // 100MB
-        val cacheDirectory: String = "exoplayer_cache"
+        val cacheDirectory: String = "exoplayer_cache",
     )
-
 }
 
 // 播放器建造者

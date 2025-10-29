@@ -24,16 +24,21 @@ rootProject {
             kotlin {
                 target("**/*.kt")
                 targetExclude("**/build/**/*.kt")
-                ktlint {
-                    version.set("0.50.0")
-                    // 启用 ktlint 官方 Android 规则集
-                    android.set(true)
-                    // 或者使用 editorConfig 覆盖
-                    editorConfigOverride.put("android", true)
-                }
-                licenseHeaderFile(rootProject.file("spotless/copyright.kt"))  // 统一添加版权头（如开源协议注释）
+                targetExclude("**/test/**/*.kt")
+                targetExclude("**/androidTest/**/*.kt")
 
+                ktlint(ktlintVersion)
+                    .editorConfigOverride(
+                        mapOf(
+                            "android" to "true",
+                            "max_line_length" to "120",
+                            "indent_size" to "4"
+                        )
+                    )
+
+                licenseHeaderFile(rootProject.file("spotless/copyright.kt"))
             }
+
 
             // 配置 .kts 脚本文件（如 build.gradle.kts）的格式化
             format("kts") {

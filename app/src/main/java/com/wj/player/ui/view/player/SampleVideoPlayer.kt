@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.view.player
 
 import androidx.compose.foundation.background
@@ -63,7 +47,6 @@ fun SampleVideoPlayer(
     isFullscreen: Boolean = false,
     onFullscreenToggle: () -> Unit = {},
 ) {
-
     val context = LocalContext.current
     val playerState by controller.playerState.collectAsState()
 
@@ -76,7 +59,7 @@ fun SampleVideoPlayer(
                     useController = false
                 }
             },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
         )
 
         // 控制层
@@ -91,7 +74,7 @@ fun SampleVideoPlayer(
                 onFullscreenToggle = onFullscreenToggle,
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(config.controlsBackgroundColor)
+                    .background(config.controlsBackgroundColor),
             )
         }
 
@@ -101,7 +84,7 @@ fun SampleVideoPlayer(
                 modifier = Modifier
                     .size(48.dp)
                     .align(Alignment.Center),
-                color = config.controlsContentColor
+                color = config.controlsContentColor,
             )
         }
     }
@@ -116,7 +99,7 @@ private fun PlayerControls(
     onSeek: (Long) -> Unit,
     onSpeedChange: (Float) -> Unit,
     onFullscreenToggle: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(modifier = modifier) {
         // 顶部控制栏
@@ -125,7 +108,7 @@ private fun PlayerControls(
                 .fillMaxWidth()
                 .padding(8.dp)
                 .align(Alignment.TopEnd),
-            horizontalArrangement = Arrangement.End
+            horizontalArrangement = Arrangement.End,
         ) {
             // 速度控制
             if (config.showSpeedControl) {
@@ -137,13 +120,13 @@ private fun PlayerControls(
                         Icon(
                             imageVector = Icons.Default.AddCircle,
                             contentDescription = "Speed",
-                            tint = config.controlsContentColor
+                            tint = config.controlsContentColor,
                         )
                     }
 
                     DropdownMenu(
                         expanded = expanded,
-                        onDismissRequest = { expanded = false }
+                        onDismissRequest = { expanded = false },
                     ) {
                         speeds.forEach { speed ->
                             DropdownMenuItem(
@@ -151,7 +134,7 @@ private fun PlayerControls(
                                 onClick = {
                                     onSpeedChange(speed)
                                     expanded = false
-                                }
+                                },
                             )
                         }
                     }
@@ -174,7 +157,7 @@ private fun PlayerControls(
         if (config.showPlayPause) {
             IconButton(
                 onClick = onPlayPause,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier.align(Alignment.Center),
             ) {
                 if (state.isPlaying) {
                     config.pauseIcon()
@@ -190,20 +173,20 @@ private fun PlayerControls(
                 modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.BottomCenter)
-                    .padding(16.dp)
+                    .padding(16.dp),
             ) {
                 // 时间显示
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     Text(
                         text = formatTime(state.currentPosition),
-                        color = config.controlsContentColor
+                        color = config.controlsContentColor,
                     )
                     Text(
                         text = formatTime(state.duration),
-                        color = config.controlsContentColor
+                        color = config.controlsContentColor,
                     )
                 }
 
@@ -217,9 +200,9 @@ private fun PlayerControls(
                     colors = SliderDefaults.colors(
                         thumbColor = config.controlsContentColor,
                         activeTrackColor = config.controlsContentColor.copy(alpha = 0.7f),
-                        inactiveTrackColor = config.controlsContentColor.copy(alpha = 0.3f)
+                        inactiveTrackColor = config.controlsContentColor.copy(alpha = 0.3f),
                     ),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
         }

@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.screen.search
 
 import androidx.compose.foundation.layout.Column
@@ -38,7 +22,7 @@ import com.wj.player.ui.screen.search.viewmodel.SearchViewModel
 fun SearcherScreen(
     viewModel: SearchViewModel,
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // 仅观察一个状态流（符合单一来源原则）
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -83,7 +67,7 @@ fun SearcherScreen(
             onTextChange = uiStateHolder::updateSearchText,
             onClearClick = uiStateHolder::clearSearchText,
             onBackClick = onBackClick,
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
         )
 
         // 内容区：基于单一状态渲染
@@ -103,7 +87,7 @@ fun SearcherScreen(
                             SearchResultList(
                                 videos = content.searchResults,
                                 listState = uiStateHolder.listState,
-                                keyword = content.keyword
+                                keyword = content.keyword,
                             )
                         }
                     }
@@ -114,12 +98,12 @@ fun SearcherScreen(
                             onHistoryClick = {
                                 uiStateHolder.onHistoryKeywordClicked(it.keyword) {
                                     viewModel.onSearchKeywordChanged(
-                                        it
+                                        it,
                                     )
                                 }
                             },
                             onDeleteClick = viewModel::onDeleteHistory,
-                            onClearAllClick = viewModel::onClearAllHistory
+                            onClearAllClick = viewModel::onClearAllHistory,
                         )
                     }
                 }

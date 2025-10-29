@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.view.popup
 
 import androidx.compose.animation.core.MutableTransitionState
@@ -85,7 +69,7 @@ fun HiPopup(
     // 透明度动画
     val alpha by transition.animateFloat(
         transitionSpec = { tween(200) },
-        label = "alpha_animation"
+        label = "alpha_animation",
     ) { state ->
         if (state) 1f else 0f
     }
@@ -93,7 +77,7 @@ fun HiPopup(
     // 缩放动画
     val scale by transition.animateFloat(
         transitionSpec = { tween(200) },
-        label = "scale_animation"
+        label = "scale_animation",
     ) { state ->
         if (state) 1f else 0.8f
     }
@@ -112,13 +96,13 @@ fun HiPopup(
             properties = PopupProperties(
                 dismissOnBackPress = dismissOnBackPress,
                 dismissOnClickOutside = dismissOnClickOutside,
-                excludeFromSystemGesture = false
+                excludeFromSystemGesture = false,
             ),
             onDismissRequest = {
                 if (isVisible) {
                     transitionState.targetState = false
                 }
-            }
+            },
         ) {
             // 半透明背景（点击可关闭）
             if (dismissOnClickOutside) {
@@ -128,7 +112,7 @@ fun HiPopup(
                         .background(Color.Black.copy(alpha = 0.0f * alpha))
                         .clickable {
                             transitionState.targetState = false
-                        }
+                        },
                 )
             }
 
@@ -139,10 +123,10 @@ fun HiPopup(
                     .scale(scale)
                     .background(
                         color = backgroundColor,
-                        shape = shape
+                        shape = shape,
                     )
                     .shadow(elevation.dp, shape)
-                    .padding(contentPadding.dp)
+                    .padding(contentPadding.dp),
             ) {
                 content()
             }
@@ -158,7 +142,7 @@ fun HiPopup(
  */
 data class AnchorPosition(
     val alignment: Alignment = Alignment.TopStart,
-    val offset: IntOffset = IntOffset(0, 0)
+    val offset: IntOffset = IntOffset(0, 0),
 )
 
 /**
@@ -184,10 +168,10 @@ fun PopupExample() {
                         alignment = Alignment.BottomStart,
                         offset = IntOffset(
                             position.x.toInt(),
-                            position.y.toInt() + coordinates.size.height
-                        )
+                            position.y.toInt() + coordinates.size.height,
+                        ),
                     )
-                }
+                },
         )
 
         // 显示自定义 Popup
@@ -195,13 +179,13 @@ fun PopupExample() {
             HiPopup(
                 isVisible = showPopup,
                 onDismiss = { showPopup = false },
-                anchorPosition = anchorPosition
+                anchorPosition = anchorPosition,
             ) {
                 // Popup 内容
                 Box(modifier = Modifier.size(200.dp)) {
                     androidx.compose.material3.Text(
                         text = "这是一个自定义 Popup",
-                        color = MaterialTheme.colorScheme.onSurface
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                 }
             }

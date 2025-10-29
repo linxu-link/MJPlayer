@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.screen.videolist
 
 import androidx.compose.animation.AnimatedVisibility
@@ -92,7 +76,7 @@ fun VideoListScreen(
     onVideoOnclick: (VideoEntity) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: VideoViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
+    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -106,7 +90,7 @@ fun VideoListScreen(
                 onFilterActiveTasks = {},
                 onFilterCompletedTasks = {},
                 onClearCompletedTasks = {},
-                onRefresh = { viewModel.loadVideos() } // 调用ViewModel的加载方法
+                onRefresh = { viewModel.loadVideos() }, // 调用ViewModel的加载方法
             )
         },
         floatingActionButton = {
@@ -119,11 +103,11 @@ fun VideoListScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
-                    contentDescription = "添加"
+                    contentDescription = "添加",
                 )
             }
         },
-        floatingActionButtonPosition = FabPosition.End
+        floatingActionButtonPosition = FabPosition.End,
     ) { innerPadding ->
 
         val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -154,7 +138,7 @@ fun VideoListContent(
     onVideoOnclick: (VideoEntity) -> Unit,
     isLoading: Boolean, // 新增加载状态参数
     onRefresh: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     // 收集分页数据
     val pagingVideos = items.collectAsLazyPagingItems()
@@ -168,20 +152,20 @@ fun VideoListContent(
             pagingVideos.itemSnapshotList.items
                 .groupBy { video ->
                     VideoTimeUtils.formatVideoDate(video.updateTime)
-                }
+                },
         )
     }
 
     // 下拉刷新状态
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isLoading || pagingVideos.loadState.refresh is LoadState.Loading,
-        onRefresh = { onRefresh() } // 调用ViewModel的加载方法
+        onRefresh = { onRefresh() }, // 调用ViewModel的加载方法
     )
 
     Box(
         modifier = modifier
             .fillMaxSize()
-            .pullRefresh(pullRefreshState)
+            .pullRefresh(pullRefreshState),
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             // 刷新失败状态
@@ -192,13 +176,13 @@ fun VideoListContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(20.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "刷新失败：${error.error.message}\n可再次下拉重试",
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.error,
-                            fontSize = 14.sp
+                            fontSize = 14.sp,
                         )
                     }
                 }
@@ -214,13 +198,13 @@ fun VideoListContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 80.dp),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         Text(
                             text = "未检测到本地视频",
                             textAlign = TextAlign.Center,
                             fontSize = 16.sp,
-                            color = MaterialTheme.colorScheme.onBackground
+                            color = MaterialTheme.colorScheme.onBackground,
                         )
                     }
                 }
@@ -232,7 +216,7 @@ fun VideoListContent(
 
                 items(
                     count = sortedDates.size,
-                    key = { index -> sortedDates[index] } // 使用索引获取日期作为key
+                    key = { index -> sortedDates[index] }, // 使用索引获取日期作为key
                 ) { index ->
                     val date = sortedDates[index] // 通过索引获取日期
                     val videos = groupedVideos[date] ?: emptyList()
@@ -246,7 +230,7 @@ fun VideoListContent(
                             groupExpandStates[date] = !isExpanded
                         },
                         onVideoClick = onVideoOnclick,
-                        modifier = Modifier.padding(bottom = 8.dp)
+                        modifier = Modifier.padding(bottom = 8.dp),
                     )
                 }
             }
@@ -260,12 +244,12 @@ fun VideoListContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(16.dp),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(32.dp),
                                 color = MaterialTheme.colorScheme.primary,
-                                strokeWidth = 2.dp
+                                strokeWidth = 2.dp,
                             )
                         }
                     }
@@ -278,13 +262,13 @@ fun VideoListContent(
                                 .fillMaxWidth()
                                 .padding(16.dp)
                                 .clickable { pagingVideos.retry() },
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             Text(
                                 text = "加载更多失败，点击重试",
                                 textAlign = TextAlign.Center,
                                 fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.primary
+                                color = MaterialTheme.colorScheme.primary,
                             )
                         }
                     }
@@ -300,7 +284,7 @@ fun VideoListContent(
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
             contentColor = MaterialTheme.colorScheme.primary,
-            backgroundColor = MaterialTheme.colorScheme.surface
+            backgroundColor = MaterialTheme.colorScheme.surface,
         )
     }
 }
@@ -315,7 +299,7 @@ fun VideoGroupItem(
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     onVideoClick: (VideoEntity) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         // 分组标题栏（保持不变）
@@ -324,19 +308,19 @@ fun VideoGroupItem(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = date,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Medium,
-                color = Color.DarkGray
+                color = Color.DarkGray,
             )
             IconButton(onClick = onToggleExpand) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = if (isExpanded) "收起" else "展开",
-                    tint = Color.Gray
+                    tint = Color.Gray,
                 )
             }
         }
@@ -345,12 +329,12 @@ fun VideoGroupItem(
         AnimatedVisibility(
             visible = isExpanded,
             enter = fadeIn(animationSpec = tween(durationMillis = 300)),
-            exit = fadeOut(animationSpec = tween(durationMillis = 300))
+            exit = fadeOut(animationSpec = tween(durationMillis = 300)),
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 // 将视频列表按每行4个分组
                 val rows = videos.chunked(4)
@@ -360,19 +344,19 @@ fun VideoGroupItem(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                     ) {
                         // 添加当前行的视频
                         rowVideos.forEach { video ->
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .aspectRatio(16f / 9f)
+                                    .aspectRatio(16f / 9f),
                             ) {
                                 VideoThumbnailItem(
                                     video = video,
                                     onVideoClick = onVideoClick,
-                                    modifier = Modifier.fillMaxSize()
+                                    modifier = Modifier.fillMaxSize(),
                                 )
                             }
                         }
@@ -382,7 +366,7 @@ fun VideoGroupItem(
                             Box(
                                 modifier = Modifier
                                     .weight(1f)
-                                    .aspectRatio(16f / 9f)
+                                    .aspectRatio(16f / 9f),
                             )
                         }
                     }
@@ -395,7 +379,7 @@ fun VideoGroupItem(
                         .padding(top = 4.dp)
                         .size(height = 1.dp, width = 300.dp)
                         .align(Alignment.CenterHorizontally)
-                        .background(Color.LightGray.copy(alpha = 0.5f))
+                        .background(Color.LightGray.copy(alpha = 0.5f)),
                 )
             }
         }
@@ -410,24 +394,24 @@ fun VideoGroupItem(
 private fun VideoThumbnailItem(
     video: VideoEntity, // 接收VideoEntity类型
     onVideoClick: (VideoEntity) -> Unit, // 视频点击回调
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .clickable { onVideoClick(video) } // 处理点击事件
+            .clickable { onVideoClick(video) }, // 处理点击事件
     ) {
         // 视频缩略图
         Image(
             painter = rememberAsyncImagePainter(
                 model = if (video.thumbnailPath.isNullOrEmpty()) video.path else video.thumbnailPath,
                 error = painterResource(id = R.drawable.ic_launcher_background),
-                contentScale = ContentScale.Crop
+                contentScale = ContentScale.Crop,
             ),
             contentDescription = video.title,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
         // 视频时长
@@ -439,7 +423,7 @@ private fun VideoThumbnailItem(
                 .align(Alignment.BottomEnd)
                 .padding(4.dp)
                 .background(Color.Black.copy(alpha = 0.7f))
-                .padding(horizontal = 4.dp, vertical = 2.dp)
+                .padding(horizontal = 4.dp, vertical = 2.dp),
         )
     }
 }
@@ -453,7 +437,7 @@ private fun VideoContentEmptyPreview() {
                 items = flowOf(PagingData.empty()),
                 onVideoOnclick = {},
                 isLoading = false,
-                onRefresh = {}
+                onRefresh = {},
             )
         }
     }

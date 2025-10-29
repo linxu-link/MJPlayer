@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.screen.videolist
 
 import android.app.Application
@@ -39,7 +23,7 @@ import javax.inject.Inject
 data class VideoListUiState(
     val videos: Flow<PagingData<VideoEntity>> = flowOf(PagingData.empty()), // 分页视频数据
     val isLoading: Boolean = false, // 加载状态标记
-    val userMessage: Int? = null // 用户提示消息（资源ID）
+    val userMessage: Int? = null, // 用户提示消息（资源ID）
 )
 
 @HiltViewModel
@@ -50,6 +34,7 @@ class VideoViewModel @Inject constructor(
 
     // 加载状态（私有可变流）
     private val _isLoading = MutableStateFlow(false)
+
     // 用户消息（私有可变流）
     private val _userMessage = MutableStateFlow<Int?>(null)
 
@@ -60,17 +45,17 @@ class VideoViewModel @Inject constructor(
     // 对外暴露的UI状态（聚合所有状态流）
     val uiState: StateFlow<VideoListUiState> = combine(
         _isLoading,
-        _userMessage
+        _userMessage,
     ) { isLoading, userMessage ->
         VideoListUiState(
-            videos = _videosFlow,  // 直接使用原始的分页数据流（Flow类型）
+            videos = _videosFlow, // 直接使用原始的分页数据流（Flow类型）
             isLoading = isLoading,
-            userMessage = userMessage
+            userMessage = userMessage,
         )
     }.stateIn(
         scope = viewModelScope,
         started = WhileUiSubscribed,
-        initialValue = VideoListUiState(isLoading = true)
+        initialValue = VideoListUiState(isLoading = true),
     )
 
     init {

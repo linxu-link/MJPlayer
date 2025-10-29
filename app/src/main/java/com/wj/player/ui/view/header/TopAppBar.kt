@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 @file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.wj.player.ui.view.header
@@ -25,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
@@ -56,7 +39,7 @@ fun VideoListTopAppBar(
     onFilterActiveTasks: () -> Unit,
     onFilterCompletedTasks: () -> Unit,
     onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
     TopAppBar(
         title = {},
@@ -69,14 +52,14 @@ fun VideoListTopAppBar(
             FilterTasksMenu(
                 onFilterAllTasks,
                 onFilterActiveTasks,
-                onFilterCompletedTasks
+                onFilterCompletedTasks,
             )
             MoreTasksMenu(
                 onClearCompletedTasks,
-                onRefresh
+                onRefresh,
             )
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
@@ -89,7 +72,7 @@ fun AddEditTaskTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
             }
         },
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier.fillMaxWidth(),
     )
 }
 
@@ -97,27 +80,36 @@ fun AddEditTaskTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
 private fun FilterTasksMenu(
     onFilterAllTasks: () -> Unit,
     onFilterActiveTasks: () -> Unit,
-    onFilterCompletedTasks: () -> Unit
+    onFilterCompletedTasks: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(
                 painterResource(id = R.drawable.ic_filter_list),
-                stringResource(id = R.string.menu_filter)
+                stringResource(id = R.string.menu_filter),
             )
-        }
+        },
     ) { closeMenu ->
         DropdownMenuItem(
-            onClick = { onFilterAllTasks(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_all)) }
+            onClick = {
+                onFilterAllTasks()
+                closeMenu()
+            },
+            text = { Text(text = stringResource(id = R.string.nav_all)) },
         )
         DropdownMenuItem(
-            onClick = { onFilterActiveTasks(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_active)) }
+            onClick = {
+                onFilterActiveTasks()
+                closeMenu()
+            },
+            text = { Text(text = stringResource(id = R.string.nav_active)) },
         )
         DropdownMenuItem(
-            onClick = { onFilterCompletedTasks(); closeMenu() },
-            text = { Text(text = stringResource(id = R.string.nav_completed)) }
+            onClick = {
+                onFilterCompletedTasks()
+                closeMenu()
+            },
+            text = { Text(text = stringResource(id = R.string.nav_completed)) },
         )
     }
 }
@@ -125,20 +117,26 @@ private fun FilterTasksMenu(
 @Composable
 private fun MoreTasksMenu(
     onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit
+    onRefresh: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_more))
-        }
+        },
     ) { closeMenu ->
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.menu_clear)) },
-            onClick = { onClearCompletedTasks(); closeMenu() }
+            onClick = {
+                onClearCompletedTasks()
+                closeMenu()
+            },
         )
         DropdownMenuItem(
             text = { Text(text = stringResource(id = R.string.refresh)) },
-            onClick = { onRefresh(); closeMenu() }
+            onClick = {
+                onRefresh()
+                closeMenu()
+            },
         )
     }
 }
@@ -146,7 +144,7 @@ private fun MoreTasksMenu(
 @Composable
 private fun TopAppBarDropdownMenu(
     iconContent: @Composable () -> Unit,
-    content: @Composable ColumnScope.(() -> Unit) -> Unit
+    content: @Composable ColumnScope.(() -> Unit) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -157,13 +155,12 @@ private fun TopAppBarDropdownMenu(
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false },
-            modifier = Modifier.wrapContentSize(Alignment.TopEnd)
+            modifier = Modifier.wrapContentSize(Alignment.TopEnd),
         ) {
             content { expanded = !expanded }
         }
     }
 }
-
 
 @Preview
 @Composable

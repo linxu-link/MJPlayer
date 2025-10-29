@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.data.source.local.video
 
 import android.content.Context
@@ -39,7 +23,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * 视频本地数据源实现类：具体处理 MediaStore 扫描和 Room 缓存
@@ -51,7 +34,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
     private val context: Context,
     private val videoDao: VideoDao,
     @IODispatcher
-    private val ioDispatcher: CoroutineDispatcher
+    private val ioDispatcher: CoroutineDispatcher,
 ) : VideoLocalDataSource {
 
     init {
@@ -70,7 +53,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
         context.contentResolver.registerContentObserver(
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
             true,
-            videoObserver
+            videoObserver,
         )
     }
 
@@ -92,7 +75,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
             MediaStore.Video.Media.DURATION, // 时长
             MediaStore.Video.Media.SIZE, // 大小
             MediaStore.Video.Media.DATE_MODIFIED, // 最后修改时间
-            MediaStore.Video.Media.MINI_THUMB_MAGIC // 缩略图 Uri
+            MediaStore.Video.Media.MINI_THUMB_MAGIC, // 缩略图 Uri
         )
         // 按修改时间倒序（最新的在前）
         val sortOrder = "${MediaStore.Video.Media.DATE_MODIFIED} DESC"
@@ -108,8 +91,10 @@ class VideoLocalDataSourceImpl @Inject constructor(
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)),
                     size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
                     updateTime = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)),
-                    thumbnailPath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MINI_THUMB_MAGIC)),
-                    lastScanTime = System.currentTimeMillis()
+                    thumbnailPath = cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MINI_THUMB_MAGIC),
+                    ),
+                    lastScanTime = System.currentTimeMillis(),
                 )
                 videos.add(video)
             }

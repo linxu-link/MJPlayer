@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.screen.search.component
 
 import androidx.compose.foundation.layout.Row
@@ -43,19 +27,19 @@ fun SearchTextField(
     onClearClick: () -> Unit,
     onBackClick: () -> Unit,
     focusRequester: FocusRequester,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         // 返回按钮（事件向上传递）
         IconButton(onClick = onBackClick) {
             Icon(
                 imageVector = Icons.Default.ArrowBack,
-                contentDescription = "返回"
+                contentDescription = "返回",
             )
         }
 
@@ -69,17 +53,17 @@ fun SearchTextField(
                 .focusRequester(focusRequester),
             textStyle = TextStyle(
                 fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.onSurface,
             ),
             decorationBox = { innerTextField ->
                 if (text.isEmpty()) {
                     Text(
                         text = "搜索视频...",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 innerTextField()
-            }
+            },
         )
 
         // 清空按钮（事件向上传递）
@@ -87,7 +71,7 @@ fun SearchTextField(
             IconButton(onClick = onClearClick) {
                 Icon(
                     imageVector = Icons.Default.Clear,
-                    contentDescription = "清空输入"
+                    contentDescription = "清空输入",
                 )
             }
         }

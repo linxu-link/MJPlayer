@@ -1,19 +1,3 @@
-/*
- * Copyright 2025 WuJia
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     https://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.wj.player.ui.screen.search.component
 
 import androidx.compose.foundation.Image
@@ -49,17 +33,17 @@ fun SearchResultList(
     videos: List<Video>,
     listState: LazyListState,
     keyword: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyColumn(
         state = listState, // 绑定界面逻辑容器的滚动状态
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
     ) {
         items(videos, key = { it.id }) { video ->
             VideoItem(
                 video = video,
                 keyword = keyword,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
             )
         }
     }
@@ -70,7 +54,7 @@ fun SearchResultList(
 private fun VideoItem(
     video: Video,
     keyword: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier.fillMaxWidth()) {
         // 缩略图
@@ -80,7 +64,7 @@ private fun VideoItem(
             modifier = Modifier
                 .size(120.dp, 80.dp)
                 .clip(RoundedCornerShape(8.dp)),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
         )
 
         Spacer(modifier = Modifier.width(12.dp))
@@ -91,7 +75,7 @@ private fun VideoItem(
             HighlightedText(
                 text = video.title,
                 keyword = keyword,
-                style = TextStyle()
+                style = TextStyle(),
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -100,7 +84,7 @@ private fun VideoItem(
             Text(
                 text = "大小：${video.size / (1024 * 1024)} MB",
                 fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(modifier = Modifier.height(4.dp))
@@ -110,7 +94,7 @@ private fun VideoItem(
             Text(
                 text = "创建时间：${dateFormat.format(video.updateTime)}",
                 fontSize = 12.sp,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }
