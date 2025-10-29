@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="21">
+      <module name="MagicPlayer.buildSrc" target="17" />
+      <module name="MagicPlayer.buildSrc.main" target="17" />
+      <module name="MagicPlayer.buildSrc.test" target="17" />
+      <module name="MagicPlayer.lib_torrent" target="17" />
+      <module name="MagicPlayer.mp-data" target="17" />
+      <module name="MagicPlayer.mp-domain" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

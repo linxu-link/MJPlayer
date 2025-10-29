@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     Copyright 2025 WuJia
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+    <string name="app_name">MJPlayer</string>
+    <!-- 空历史提示 -->
+    <string name="empty_history_hint">暂无搜索历史</string>
+    <!-- 空结果提示 -->
+    <string name="empty_result_hint">未找到与「%1$s」相关的视频</string>
+    <string name="empty_result_suggestion">请尝试其他关键词</string>
+    <!-- 加载提示 -->
+    <string name="loading_hint">正在搜索...</string>
+
+    <!-- strings.xml -->
+    <string name="videos_loaded_success">视频加载成功</string>
+    <string name="failed_to_load_videos">视频加载失败，请重试</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="nav_all">All</string>
+    <string name="nav_active">Active</string>
+    <string name="nav_completed">Completed</string>
+    <string name="menu_more">More</string>
+    <string name="menu_clear">Clear completed</string>
+    <string name="refresh">Refresh</string>
+    <string name="menu_back">Back</string>
+    <string name="search">Search</string>
+</resources>

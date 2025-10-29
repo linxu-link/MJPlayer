@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+option java_package = "com.wujia.toolkit.jetpack.datastore";
+option java_multiple_files = true;
+
+message UserPreferences {
+  string username = 1;
+  int32 age = 2;
+  bool is_logged_in = 3;
+  string email = 4;
+  repeated string tags = 5;
+  double score = 6;
+}
