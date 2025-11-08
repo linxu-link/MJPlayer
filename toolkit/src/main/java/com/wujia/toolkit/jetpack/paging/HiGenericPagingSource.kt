@@ -1,6 +1,5 @@
 package com.wujia.toolkit.jetpack.paging
 
-
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 
@@ -15,7 +14,7 @@ import androidx.paging.PagingState
 open class HiGenericPagingSource<Key : Any, Value : Any>(
     private val initialKey: Key,
     private val loadSize: Int = 10,
-    private val loadData: suspend (Key, Int) -> Pair<List<Value>, Key?>
+    private val loadData: suspend (Key, Int) -> Pair<List<Value>, Key?>,
 ) : PagingSource<Key, Value>() {
 
     override suspend fun load(params: LoadParams<Key>): LoadResult<Key, Value> {
@@ -25,7 +24,7 @@ open class HiGenericPagingSource<Key : Any, Value : Any>(
             LoadResult.Page(
                 data = items,
                 prevKey = null, // 仅支持向前分页
-                nextKey = nextKey
+                nextKey = nextKey,
             )
         } catch (e: Exception) {
             LoadResult.Error(e)

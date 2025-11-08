@@ -51,7 +51,6 @@ object WebViewHolder {
         }
     }
 
-
     // 立即销毁过期的webview
     fun clear() {
         cleanExpiredWebViews()
@@ -117,12 +116,15 @@ object WebViewHolder {
     }
 
     private fun startJanitorTask() {
-        mainHandler.postDelayed(object : Runnable {
-            override fun run() {
-                cleanExpiredWebViews()
-                mainHandler.postDelayed(this, IDLE_TIMEOUT)
-            }
-        }, IDLE_TIMEOUT)
+        mainHandler.postDelayed(
+            object : Runnable {
+                override fun run() {
+                    cleanExpiredWebViews()
+                    mainHandler.postDelayed(this, IDLE_TIMEOUT)
+                }
+            },
+            IDLE_TIMEOUT,
+        )
     }
 
     private fun cleanExpiredWebViews() {
@@ -142,7 +144,6 @@ object WebViewHolder {
             settings.javaScriptEnabled = true
         }
     }
-
 
     private class WebViewWrapper(context: Context) {
         val webView = WebView(context)
@@ -171,5 +172,4 @@ object WebViewHolder {
         }
         return result.get()
     }
-
 }

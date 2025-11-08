@@ -21,7 +21,9 @@ object HiWifiReceiver {
         HiAppGlobal.getApplication().applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
     }
     private val connectivityManager by lazy {
-        HiAppGlobal.getApplication().applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        HiAppGlobal.getApplication().applicationContext.getSystemService(
+            Context.CONNECTIVITY_SERVICE,
+        ) as ConnectivityManager
     }
 
     // 动态监听变化（通过 BroadcastReceiver）
@@ -47,7 +49,7 @@ object HiWifiReceiver {
                 WifiManager.WIFI_STATE_CHANGED_ACTION -> {
                     val state = intent.getIntExtra(
                         WifiManager.EXTRA_WIFI_STATE,
-                        WifiManager.WIFI_STATE_UNKNOWN
+                        WifiManager.WIFI_STATE_UNKNOWN,
                     )
                     val enabled = state == WifiManager.WIFI_STATE_ENABLED
                     notifyWifiEnabled(enabled)
@@ -55,7 +57,7 @@ object HiWifiReceiver {
 
                 WifiManager.NETWORK_STATE_CHANGED_ACTION -> {
                     val networkInfo = intent.getParcelableExtra<NetworkInfo>(
-                        WifiManager.EXTRA_NETWORK_INFO
+                        WifiManager.EXTRA_NETWORK_INFO,
                     )
                     val connected = networkInfo?.isConnected == true
                     val ssid = if (connected) getCurrentSsid() else null
@@ -131,7 +133,7 @@ object HiWifiReceiver {
                 }
                 HiAppGlobal.getApplication().registerReceiver(
                     wifiReceiver,
-                    filter
+                    filter,
                 )
             } else if (listeners.size > 1) {
                 checkCurrentState(listener)
@@ -155,5 +157,4 @@ object HiWifiReceiver {
         fun onWifiConnected(connected: Boolean, ssid: String? = null) {}
         fun onSignalStrengthChanged(rssi: Int, level: Int) {}
     }
-
 }

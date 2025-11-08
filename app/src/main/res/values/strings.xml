@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
      Copyright 2025 WuJia
 
      Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +15,14 @@
 -->
 <resources>
     <string name="app_name">MJPlayer</string>
+
+    <string name="menu_filter">Filter</string>
+    <string name="menu_filter_list">列表</string>
+    <string name="menu_filter_pic">宫格</string>
+    <string name="menu_settings_title">设置</string>
+    <string name="menu_settings_theme">应用主题</string>
+    <string name="menu_settings_video">视频设置</string>
+
     <!-- 空历史提示 -->
     <string name="empty_history_hint">暂无搜索历史</string>
     <!-- 空结果提示 -->
@@ -28,11 +35,10 @@
     <string name="videos_loaded_success">视频加载成功</string>
     <string name="failed_to_load_videos">视频加载失败，请重试</string>
 
-    <string name="menu_filter">Filter</string>
     <string name="nav_all">All</string>
     <string name="nav_active">Active</string>
     <string name="nav_completed">Completed</string>
-    <string name="menu_more">More</string>
+
     <string name="menu_clear">Clear completed</string>
     <string name="refresh">Refresh</string>
     <string name="menu_back">Back</string>

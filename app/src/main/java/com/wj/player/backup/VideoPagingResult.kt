@@ -1,6 +1,6 @@
 package com.wj.player.backup
 
-import com.wj.player.entity.Video
+import com.wj.player.data.entity.Video
 
 /**
  * 分页查询结果：包含当前页视频列表 + 是否有更多数据

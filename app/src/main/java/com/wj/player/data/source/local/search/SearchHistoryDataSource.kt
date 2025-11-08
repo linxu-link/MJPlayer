@@ -1,6 +1,6 @@
 package com.wj.player.data.source.local.search
 
-import com.wj.player.entity.SearchHistory
+import com.wj.player.data.entity.SearchHistory
 import kotlinx.coroutines.flow.Flow
 
 /**

@@ -20,13 +20,13 @@ object RetrofitFactory {
         val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
             override fun checkClientTrusted(
                 chain: Array<out X509Certificate>?,
-                authType: String?
+                authType: String?,
             ) {
             }
 
             override fun checkServerTrusted(
                 chain: Array<out X509Certificate>?,
-                authType: String?
+                authType: String?,
             ) {
             }
 
@@ -48,9 +48,11 @@ object RetrofitFactory {
             .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
             .readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
             .writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = HttpLoggingInterceptor.Level.BODY
-            })
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = HttpLoggingInterceptor.Level.BODY
+                },
+            )
             .build()
     }
 

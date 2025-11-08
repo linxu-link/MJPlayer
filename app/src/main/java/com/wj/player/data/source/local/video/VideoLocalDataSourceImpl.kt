@@ -12,7 +12,7 @@ import com.wj.player.data.source.local.video.room.VideoDao
 import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.data.source.local.video.room.toDomainModel
 import com.wj.player.di.IODispatcher
-import com.wj.player.entity.Video
+import com.wj.player.data.entity.Video
 import com.wujia.toolkit.utils.HiLog
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineDispatcher
@@ -86,16 +86,27 @@ class VideoLocalDataSourceImpl @Inject constructor(
             while (cursor.moveToNext()) {
                 val video = VideoEntity(
                     id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)),
-                    title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)),
-                    path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)),
-                    duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)),
-                    size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
-                    updateTime = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)),
+                    title = cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE),
+                    ),
+                    path = cursor.getString(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA),
+                    ),
+                    duration = cursor.getLong(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION),
+                    ),
+                    size = cursor.getLong(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE),
+                    ),
+                    updateTime = cursor.getLong(
+                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED),
+                    ),
                     thumbnailPath = cursor.getString(
                         cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MINI_THUMB_MAGIC),
                     ),
                     lastScanTime = System.currentTimeMillis(),
                 )
+                HiLog.i("查询到视频：${video.updateTime} ${video.title}")
                 videos.add(video)
             }
         }

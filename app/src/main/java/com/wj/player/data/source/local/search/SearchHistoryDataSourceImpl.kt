@@ -1,6 +1,7 @@
 package com.wj.player.data.source.local.search
 
-import com.wj.player.entity.SearchHistory
+import com.wj.player.di.IODispatcher
+import com.wj.player.data.entity.SearchHistory
 import com.wujia.toolkit.jetpack.datastore.HiDataStoreManager
 import com.wujia.toolkit.utils.gson.GsonUtils
 import kotlinx.coroutines.CoroutineDispatcher
@@ -9,6 +10,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
 
 // DataStore 存储键
 private const val SEARCH_HISTORY_KEY = "search_histories"
@@ -19,8 +22,10 @@ private const val MAX_HISTORY_COUNT = 10
 /**
  * 实现类：用 DataStore 存储，通过 JSON 序列化 List<SearchHistory>
  */
-class SearchHistoryDataSourceImpl(
+@Singleton
+class SearchHistoryDataSourceImpl @Inject constructor(
     private val dataStore: HiDataStoreManager,
+    @IODispatcher
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) : SearchHistoryDataSource {
 

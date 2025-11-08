@@ -1,4 +1,3 @@
 package com.wujia.toolkit.system
 
-class HiBluetoothManager {
-}
+class HiBluetoothManager

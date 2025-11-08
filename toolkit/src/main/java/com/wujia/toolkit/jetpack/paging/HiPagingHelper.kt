@@ -16,23 +16,23 @@ class HiPagingHelper<Key : Any, Value : Any>(
     private val pageSize: Int = 10,
     private val initialKey: Key,
     private val enablePlaceholders: Boolean = false,
-    private val loadData: suspend (Key, Int) -> Pair<List<Value>, Key?>
+    private val loadData: suspend (Key, Int) -> Pair<List<Value>, Key?>,
 ) {
 
     fun createPagingFlow(): Flow<PagingData<Value>> {
         return Pager(
             config = PagingConfig(
                 pageSize = pageSize,
-                enablePlaceholders = enablePlaceholders
+                enablePlaceholders = enablePlaceholders,
             ),
             initialKey = initialKey,
             pagingSourceFactory = {
                 HiGenericPagingSource(
                     initialKey = initialKey,
                     loadSize = pageSize,
-                    loadData = loadData
+                    loadData = loadData,
                 )
-            }
+            },
         ).flow
     }
 }

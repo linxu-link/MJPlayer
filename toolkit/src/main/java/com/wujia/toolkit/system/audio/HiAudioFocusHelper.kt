@@ -19,7 +19,7 @@ private const val TAG = "AudioHelper"
     AudioManager.AUDIOFOCUS_GAIN,
     AudioManager.AUDIOFOCUS_LOSS,
     AudioManager.AUDIOFOCUS_LOSS_TRANSIENT,
-    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK
+    AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK,
 )
 annotation class AudioFocusState
 
@@ -30,7 +30,7 @@ class HiAudioFocusHelper(
         .build(),
     var onFocusGained: (() -> Unit)? = null,
     var onFocusLost: ((isTransient: Boolean) -> Unit)? = null,
-    var onShouldDuck: (() -> Unit)? = null
+    var onShouldDuck: (() -> Unit)? = null,
 ) {
     private val audioManager: AudioManager by lazy {
         HiAppGlobal.getApplication().getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -88,7 +88,7 @@ class HiAudioFocusHelper(
         focusRequest = request
         val result = audioManager.requestAudioFocus(request)
         val granted = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED)
-        if (granted){
+        if (granted) {
             onFocusGained?.invoke()
         }
         HiLog.d(TAG, "[requestAudioFocus]: $result")
@@ -113,5 +113,4 @@ class HiAudioFocusHelper(
     fun hasFocus(): Boolean {
         return _focusState.value == AudioManager.AUDIOFOCUS_GAIN
     }
-
 }

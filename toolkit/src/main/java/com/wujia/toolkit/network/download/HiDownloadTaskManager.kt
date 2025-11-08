@@ -4,12 +4,12 @@ import android.annotation.SuppressLint
 import android.app.DownloadManager
 import android.content.Context
 import com.wujia.toolkit.HiAppGlobal
+import com.wujia.toolkit.network.download.EnhancedDownloadManager.DownloadStatusListener
 import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import com.wujia.toolkit.network.download.EnhancedDownloadManager.DownloadStatusListener
 
 private const val TAG = "HiDownloadTaskManager"
 
@@ -31,11 +31,11 @@ object HiDownloadTaskManager {
             downloadId: Long,
             status: Int,
             bytesDownloaded: Int,
-            bytesTotal: Int
+            bytesTotal: Int,
         ) {
             HiLog.e(
                 TAG,
-                "[onStatusUpdate] status: $status, Downloaded: $bytesDownloaded, Total: $bytesTotal"
+                "[onStatusUpdate] status: $status, Downloaded: $bytesDownloaded, Total: $bytesTotal",
             )
             synchronized(this) {
                 HiLog.d(TAG, "[onStatusUpdate] statusListener size: ${statusListeners.size}")
@@ -75,7 +75,7 @@ object HiDownloadTaskManager {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                 HiLog.e(
                     TAG,
-                    "[cancelDownloadTask] success: ${status == DownloadManager.STATUS_SUCCESSFUL}"
+                    "[cancelDownloadTask] success: ${status == DownloadManager.STATUS_SUCCESSFUL}",
                 )
                 if (status != DownloadManager.STATUS_SUCCESSFUL) {
                     val downloadUrl =
@@ -104,7 +104,7 @@ object HiDownloadTaskManager {
                     val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
                     HiLog.e(
                         TAG,
-                        "[cancelAllDownloadTask] success: ${status == DownloadManager.STATUS_SUCCESSFUL}"
+                        "[cancelAllDownloadTask] success: ${status == DownloadManager.STATUS_SUCCESSFUL}",
                     )
                     if (status != DownloadManager.STATUS_SUCCESSFUL) {
                         val downloadUrl =
@@ -176,5 +176,4 @@ object HiDownloadTaskManager {
             }
         }
     }
-
 }

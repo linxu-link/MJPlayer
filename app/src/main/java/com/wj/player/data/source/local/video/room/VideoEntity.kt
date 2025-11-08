@@ -3,7 +3,7 @@ package com.wj.player.data.source.local.video.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.wj.player.entity.Video
+import com.wj.player.data.entity.Video
 
 /**
  * 视频本地实体：Room 数据库表结构，仅用于本地缓存

@@ -3,10 +3,24 @@
 package com.wj.player.ui.view.header
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
@@ -19,29 +33,60 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.wj.player.R
-import com.wj.player.ui.MJPlayerTheme
+import com.wj.player.ui.theme.MJPlayerTheme
+import com.wujia.toolkit.utils.HiLog
+
+@Composable
+fun CommonTopAppBar(
+    @StringRes title: Int,
+    onBack: () -> Unit,
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White,
+        ),
+        title = { Text(text = stringResource(title)) },
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
+            }
+        },
+    )
+}
+
 
 @Composable
 fun VideoListTopAppBar(
     onSearch: () -> Unit,
-    onFilterAllTasks: () -> Unit,
-    onFilterActiveTasks: () -> Unit,
-    onFilterCompletedTasks: () -> Unit,
-    onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit,
+    onFilterList: () -> Unit,
+    onFilterGrid: () -> Unit,
+    onClickThemeSettings: () -> Unit,
+    onClickVideoSettings: () -> Unit,
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White,
+        ),
         title = {},
         navigationIcon = {
             IconButton(onClick = onSearch) {
@@ -49,38 +94,114 @@ fun VideoListTopAppBar(
             }
         },
         actions = {
-            FilterTasksMenu(
-                onFilterAllTasks,
-                onFilterActiveTasks,
-                onFilterCompletedTasks,
+            FilterMenu(
+                onFilterList,
+                onFilterGrid,
             )
-            MoreTasksMenu(
-                onClearCompletedTasks,
-                onRefresh,
+            SettingsMenu(
+                onClickThemeSettings = onClickThemeSettings,
+                onClickVideoSettings = onClickVideoSettings,
             )
         },
-        modifier = Modifier.fillMaxWidth(),
     )
 }
 
 @Composable
-fun AddEditTaskTopAppBar(@StringRes title: Int, onBack: () -> Unit) {
+fun SearchTopAppBar(
+    text: String = "",
+    onSearchTextChange: (String) -> Unit,
+    onBack: () -> Unit,
+) {
+    var searchText by remember { mutableStateOf("") }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(text) {
+        searchText = text
+    }
+
     TopAppBar(
-        title = { Text(text = stringResource(title)) },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color.White,
+        ),
+        title = {},
         navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
+            IconButton(onClick = { onBack() }) {
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
             }
         },
-        modifier = Modifier.fillMaxWidth(),
+        actions = {
+            Row(
+                modifier = Modifier.padding(start = 56.dp, end = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                // 搜索框
+                BasicTextField(
+                    value = searchText,
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusRequester.freeFocus()
+                            onSearchTextChange(searchText)
+                        },
+                    ),
+                    onValueChange = {
+                        searchText = it
+                    },
+                    singleLine = true,
+                    textStyle = TextStyle(
+                        fontSize = 16.sp,
+                    ),
+                    cursorBrush = SolidColor(Color.LightGray), // 明确设置光标颜色
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .height(40.dp)
+                        .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
+                        .focusRequester(focusRequester)
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                    decorationBox = { innerTextField ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxHeight(), // 确保 Row 填满高度
+                        ) {
+                            Icon(
+                                Icons.Default.Search,
+                                contentDescription = "搜索",
+                                tint = Color.Gray,
+                                modifier = Modifier.size(20.dp), // 统一图标尺寸
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .wrapContentHeight(Alignment.CenterVertically),
+                            ) {
+                                if (searchText.isEmpty()) {
+                                    Text(
+                                        "请输入关键词...",
+                                        color = Color.Gray,
+                                        fontSize = 16.sp,
+                                        modifier = Modifier.align(Alignment.CenterStart),
+                                    )
+                                }
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .wrapContentHeight(Alignment.CenterVertically),
+                                ) {
+                                    innerTextField()
+                                }
+                            }
+                        }
+                    },
+                )
+            }
+        },
     )
 }
 
 @Composable
-private fun FilterTasksMenu(
-    onFilterAllTasks: () -> Unit,
-    onFilterActiveTasks: () -> Unit,
-    onFilterCompletedTasks: () -> Unit,
+private fun FilterMenu(
+    onFilterList: () -> Unit,
+    onFilterPic: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
@@ -92,51 +213,44 @@ private fun FilterTasksMenu(
     ) { closeMenu ->
         DropdownMenuItem(
             onClick = {
-                onFilterAllTasks()
+                onFilterList()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.nav_all)) },
+            text = { Text(text = stringResource(id = R.string.menu_filter_list)) },
         )
         DropdownMenuItem(
             onClick = {
-                onFilterActiveTasks()
+                onFilterPic()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.nav_active)) },
-        )
-        DropdownMenuItem(
-            onClick = {
-                onFilterCompletedTasks()
-                closeMenu()
-            },
-            text = { Text(text = stringResource(id = R.string.nav_completed)) },
+            text = { Text(text = stringResource(id = R.string.menu_filter_pic)) },
         )
     }
 }
 
 @Composable
-private fun MoreTasksMenu(
-    onClearCompletedTasks: () -> Unit,
-    onRefresh: () -> Unit,
+private fun SettingsMenu(
+    onClickThemeSettings: () -> Unit,
+    onClickVideoSettings: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
-            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_more))
+            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_settings_title))
         },
     ) { closeMenu ->
         DropdownMenuItem(
-            text = { Text(text = stringResource(id = R.string.menu_clear)) },
             onClick = {
-                onClearCompletedTasks()
+                onClickThemeSettings()
                 closeMenu()
             },
+            text = { Text(text = stringResource(id = R.string.menu_settings_theme)) },
         )
         DropdownMenuItem(
-            text = { Text(text = stringResource(id = R.string.refresh)) },
             onClick = {
-                onRefresh()
+                onClickVideoSettings()
                 closeMenu()
             },
+            text = { Text(text = stringResource(id = R.string.menu_settings_video)) },
         )
     }
 }
@@ -167,7 +281,7 @@ private fun TopAppBarDropdownMenu(
 private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
-            VideoListTopAppBar({ }, { }, {}, {}, {}, {})
+            VideoListTopAppBar({ }, { }, {}, {}, {})
         }
     }
 }
@@ -177,7 +291,20 @@ private fun VideoListTopAppBarPreview() {
 private fun AddEditTaskTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
-            AddEditTaskTopAppBar(R.string.app_name) { }
+            CommonTopAppBar(R.string.app_name) { }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun SearchTopAppBarPreview() {
+    MJPlayerTheme {
+        Surface {
+            SearchTopAppBar(
+                onSearchTextChange = {},
+                onBack = {},
+            )
         }
     }
 }

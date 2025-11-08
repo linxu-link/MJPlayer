@@ -8,7 +8,8 @@ private object MJPlayerScreens {
     const val VIDEO_LIST_SCREEN = "video_list_screen"
     const val PLAYER_SCREEN = "player_screen"
     const val SEARCH_SCREEN = "search_screen"
-    const val SETTINGS_SCREEN = "settings_screen"
+    const val THEME_SETTINGS_SCREEN = "theme_settings_screen"
+    const val VIDEO_SETTINGS_SCREEN = "video_settings_screen"
 }
 
 /**
@@ -24,7 +25,9 @@ object MJPlayerDestinationsArgs {
 object MJPlayerDestinations {
     const val HOME_ROUTE = MJPlayerScreens.HOME_SCREEN
     const val VIDEO_LIST_ROUTE = MJPlayerScreens.VIDEO_LIST_SCREEN
-    const val PLAYER_ROUTE = "${MJPlayerScreens.PLAYER_SCREEN}/{${MJPlayerDestinationsArgs.VIDEO_ID_ARG}}"
+    const val PLAYER_ROUTE =
+        "${MJPlayerScreens.PLAYER_SCREEN}/{${MJPlayerDestinationsArgs.VIDEO_ID_ARG}}"
     const val SEARCH_ROUTE = MJPlayerScreens.SEARCH_SCREEN
-    const val SETTINGS_ROUTE = MJPlayerScreens.SETTINGS_SCREEN
+    const val THEME_SETTINGS_ROUTE = MJPlayerScreens.THEME_SETTINGS_SCREEN
+    const val VIDEO_SETTINGS_ROUTE = MJPlayerScreens.VIDEO_SETTINGS_SCREEN
 }

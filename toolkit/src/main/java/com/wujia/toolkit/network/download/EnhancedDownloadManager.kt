@@ -24,7 +24,7 @@ class EnhancedDownloadManager(private val systemDownloadManager: DownloadManager
     private val receiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val receivedId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
-            HiLog.e(TAG, "[onReceive] downloadId : ${receivedId}")
+            HiLog.e(TAG, "[onReceive] downloadId : $receivedId")
             queryDownloadStatus(receivedId)
         }
     }
@@ -60,7 +60,9 @@ class EnhancedDownloadManager(private val systemDownloadManager: DownloadManager
         systemDownloadManager.query(query).use { cursor ->
             if (cursor != null && cursor.moveToFirst()) {
                 val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
-                val bytesDownloaded = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
+                val bytesDownloaded = cursor.getInt(
+                    cursor.getColumnIndex(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR),
+                )
                 val bytesTotal = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
                 // 回调状态
                 notifyStatus(downloadId, status, bytesDownloaded, bytesTotal)
@@ -89,9 +91,11 @@ class EnhancedDownloadManager(private val systemDownloadManager: DownloadManager
 
     // 主线程回调状态
     private fun notifyStatus(downloadId: Long, status: Int, bytesDownloaded: Int, bytesTotal: Int) {
-        mainHandler.post(Runnable {
-            statusListeners?.onStatusUpdate(downloadId, status, bytesDownloaded, bytesTotal)
-        })
+        mainHandler.post(
+            Runnable {
+                statusListeners?.onStatusUpdate(downloadId, status, bytesDownloaded, bytesTotal)
+            },
+        )
     }
 
     // 状态监听接口

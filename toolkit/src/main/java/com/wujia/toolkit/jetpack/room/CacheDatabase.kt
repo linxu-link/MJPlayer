@@ -1,12 +1,11 @@
 package com.wujia.toolkit.jetpack.room
 
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.sqlite.db.SupportSQLiteDatabase;
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import androidx.sqlite.db.SupportSQLiteDatabase
 import com.wujia.toolkit.HiAppGlobal
 import com.wujia.toolkit.utils.HiLog
-
 
 @Database(entities = [CacheEntity::class], version = 1)
 abstract class CacheDatabase : RoomDatabase() {
@@ -24,7 +23,7 @@ abstract class CacheDatabase : RoomDatabase() {
                 val instance = Room.databaseBuilder(
                     HiAppGlobal.getApplication(),
                     CacheDatabase::class.java,
-                    DB_NAME
+                    DB_NAME,
                 )
                     .allowMainThreadQueries()
                     .addCallback(DatabaseCallback())

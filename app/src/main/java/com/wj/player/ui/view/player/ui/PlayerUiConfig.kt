@@ -65,7 +65,9 @@ class PlayerUiConfig private constructor(
         fun playIcon(icon: @Composable () -> Unit) = apply { this.playIcon = icon }
         fun pauseIcon(icon: @Composable () -> Unit) = apply { this.pauseIcon = icon }
         fun fullscreenIcon(icon: @Composable () -> Unit) = apply { this.fullscreenIcon = icon }
-        fun exitFullscreenIcon(icon: @Composable () -> Unit) = apply { this.exitFullscreenIcon = icon }
+        fun exitFullscreenIcon(
+            icon: @Composable () -> Unit,
+        ) = apply { this.exitFullscreenIcon = icon }
         fun forwardIcon(icon: @Composable () -> Unit) = apply { this.forwardIcon = icon }
         fun backwardIcon(icon: @Composable () -> Unit) = apply { this.backwardIcon = icon }
 

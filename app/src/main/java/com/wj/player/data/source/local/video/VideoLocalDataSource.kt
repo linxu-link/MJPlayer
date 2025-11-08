@@ -3,7 +3,7 @@ package com.wj.player.data.source.local.video
 import android.content.Context
 import androidx.paging.PagingSource
 import com.wj.player.data.source.local.video.room.VideoEntity
-import com.wj.player.entity.Video
+import com.wj.player.data.entity.Video
 import kotlinx.coroutines.flow.Flow
 
 /**

@@ -1,8 +1,11 @@
 package com.wj.player.data.repository.search
 
 import com.wj.player.data.source.local.search.SearchHistoryDataSource
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class SearchHistoryRepositoryImpl(
+@Singleton
+class SearchHistoryRepositoryImpl @Inject constructor(
     private val dataSource: SearchHistoryDataSource,
 ) : SearchHistoryRepository {
 

@@ -38,9 +38,6 @@ android {
         compose = true
     }
     lint {
-        disable.add("NullSafeMutableLiveData")
-        // 也可以同时禁用其他可能有问题的检查
-        disable.add("GradleDependency")
         abortOnError = false
         checkReleaseBuilds = false
     }
@@ -48,9 +45,7 @@ android {
 
 dependencies {
     implementation(project(":toolkit"))
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.bundles.lifecycle)
+    implementation(libs.bundles.androidx.base)
     // compose
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
@@ -62,14 +57,6 @@ dependencies {
     implementation(libs.androidx.workmanager)
     // startUp
     implementation(libs.androidx.startup.runtime)
-    // retrofit
-    implementation(libs.retrofit)
-    implementation(libs.retrofitGson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttpLoggingInterceptor)
-    // coil
-    implementation(libs.coil)
-    implementation(libs.coil.compose)
     // webview
     implementation(libs.accompanist.webview)
     // media
@@ -79,8 +66,15 @@ dependencies {
     // hilt
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)
-
+    // timber
     implementation(libs.timber)
+    // coil
+    implementation(libs.coil)
+    implementation(libs.coil.compose)
+    // retrofit+okhttp
+    implementation(libs.bundles.net)
+
+
 
     // test
     testImplementation(libs.junit)

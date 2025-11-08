@@ -3,6 +3,7 @@ package com.wj.player.data.repository.video
 import android.content.Context
 import androidx.paging.PagingSource
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.data.entity.Video
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -13,6 +14,9 @@ interface VideoRepository {
 
     // 获取Paging3视频列表
     fun getPagingVideos(): PagingSource<Int, VideoEntity>
+
+    // 获取所有视频列表（用于播放列表等场景）
+    fun getVideos(forceRefresh: Boolean): Flow<List<Video>>
 
     // 同步本地视频到数据库
     suspend fun syncLocalVideos(context: Context)

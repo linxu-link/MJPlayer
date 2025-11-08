@@ -16,5 +16,4 @@ open class StartUpInitializer : Initializer<Unit> {
     }
 
     open fun onCreate(context: Context) {}
-
 }

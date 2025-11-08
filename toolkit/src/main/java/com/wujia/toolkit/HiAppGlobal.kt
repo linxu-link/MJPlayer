@@ -19,7 +19,5 @@ class HiAppGlobal {
             }
             throw NullPointerException("Reflect application failed.")
         }
-
     }
-
 }

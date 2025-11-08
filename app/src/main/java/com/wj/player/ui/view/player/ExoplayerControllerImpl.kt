@@ -21,7 +21,10 @@ import kotlinx.coroutines.launch
  * ExoplayerControllerImpl 是 ExoPlayer 的具体实现类，继承自 BasePlayerController。
  */
 @UnstableApi
-class ExoplayerControllerImpl(context: Context, private val config: PlayerConfig) : BasePlayerController() {
+class ExoplayerControllerImpl(
+    context: Context,
+    private val config: PlayerConfig,
+) : BasePlayerController() {
 
     private val _playerState = MutableStateFlow(PlayerState())
     override val playerState = _playerState.asStateFlow()
@@ -143,7 +146,9 @@ class Builder(private val context: Context) {
     private var config = PlayerConfig()
 
     fun setRepeatMode(mode: Int) = apply { config = config.copy(repeatMode = mode) }
-    fun setSeekForwardIncrementMs(ms: Long) = apply { config = config.copy(seekForwardIncrementMs = ms) }
+    fun setSeekForwardIncrementMs(
+        ms: Long,
+    ) = apply { config = config.copy(seekForwardIncrementMs = ms) }
     fun setSeekBackIncrementMs(ms: Long) = apply { config = config.copy(seekBackIncrementMs = ms) }
     fun enableCache(cacheSize: Long, cacheDirectory: String) = apply {
         config = config.copy(cacheConfig = PlayerConfig.CacheConfig(cacheSize, cacheDirectory))

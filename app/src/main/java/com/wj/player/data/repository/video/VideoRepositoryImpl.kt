@@ -4,11 +4,14 @@ import android.content.Context
 import androidx.paging.PagingSource
 import com.wj.player.data.source.local.video.VideoLocalDataSource
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.data.entity.Video
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -19,6 +22,8 @@ import javax.inject.Singleton
 @Singleton
 class VideoRepositoryImpl @Inject constructor(
     private val localDataSource: VideoLocalDataSource,
+    @ApplicationContext
+    private val context: Context,
 ) : VideoRepository {
 
     // 扫描状态：用 MutableStateFlow 存储，对外暴露不可变的 StateFlow
@@ -61,33 +66,29 @@ class VideoRepositoryImpl @Inject constructor(
         System.currentTimeMillis() - latestCacheTime > CACHE_EXPIRY_TIME
     }
 
-//    override fun getVideos(forceRefresh: Boolean): Flow<List<Video>> = flow {
-//        try {
-//            // 1. 检查是否需要强制刷新或缓存过期
-//            val needScan = forceRefresh || isCacheExpired()
-//            if (needScan) {
-//                // 2. 开始扫描，更新状态为“扫描中”
-//                _scanState.value = ScanState.Scanning
-//                // 3. 调用 LocalDataSource 扫描本地视频
-//                val scannedVideos = localDataSource.scanLocalVideos()
-//                // 4. 扫描成功，保存到缓存
-//                localDataSource.saveVideosToCache(scannedVideos)
-//                // 5. 更新状态为“扫描成功”
-//                _scanState.value = ScanState.Success
-//                // 6. 发射扫描结果
-//                emit(scannedVideos)
-//            } else {
-//                // 7. 缓存有效，直接从缓存获取视频
-//                val cachedVideos = localDataSource.getCachedVideos().first()
-//                emit(cachedVideos)
-//                // 更新状态为“成功”（避免 UI 显示旧状态）
-//                _scanState.value = ScanState.Success
-//            }
-//        } catch (e: Exception) {
-//            // 8. 捕获异常，更新状态为“错误”
-//            _scanState.value = ScanState.Error(e.message ?: "扫描视频失败，请检查存储权限")
-//            // 发射空列表，避免上层流中断
+    override fun getVideos(forceRefresh: Boolean): Flow<List<Video>> = flow {
+        try {
+            val needScan = forceRefresh || isCacheExpired()
+            if (needScan) {
+                // 开始扫描，更新状态为“扫描中”
+                _scanState.value = ScanState.Scanning
+                // 调用 LocalDataSource 扫描本地视频
+                localDataSource.syncMediaStoreToRoom(context)
+                _scanState.value = ScanState.Success
+                val cachedVideos = localDataSource.getCachedVideos()
+                emit(cachedVideos.first())
+            } else {
+                // 7. 缓存有效，直接从缓存获取视频
+                val cachedVideos = localDataSource.getCachedVideos().first()
+                emit(cachedVideos)
+                // 更新状态为“成功”（避免 UI 显示旧状态）
+                _scanState.value = ScanState.Success
+            }
+        } catch (e: Exception) {
+            // 8. 捕获异常，更新状态为“错误”
+            _scanState.value = ScanState.Error(e.message ?: "扫描视频失败，请检查存储权限")
+            // 发射空列表，避免上层流中断
 //            emit(emptyList())
-//        }
-//    }
+        }
+    }
 }

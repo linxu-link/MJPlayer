@@ -60,7 +60,7 @@ object HiBatteryReceiver {
                 // 注册广播接收器
                 HiAppGlobal.getApplication().registerReceiver(
                     batteryReceiver,
-                    IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+                    IntentFilter(Intent.ACTION_BATTERY_CHANGED),
                 )
             } else if (listeners.size > 1) {
                 checkBatteryStatus(listener)

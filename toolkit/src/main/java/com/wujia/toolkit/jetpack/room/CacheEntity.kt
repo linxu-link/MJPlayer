@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-
 @Entity(tableName = "table_cache")
 data class CacheEntity(
     @PrimaryKey
@@ -12,7 +11,7 @@ data class CacheEntity(
     val key: String,
 
     @ColumnInfo(name = "value")
-    var value: String
+    var value: String,
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

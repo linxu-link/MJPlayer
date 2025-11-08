@@ -27,7 +27,7 @@ object HiConnectivityReceiver : PhoneStateListener() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             val networkType = if (ActivityCompat.checkSelfPermission(
                     HiAppGlobal.getApplication(),
-                    Manifest.permission.READ_PHONE_STATE
+                    Manifest.permission.READ_PHONE_STATE,
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
                 // 权限未授予，无法获取网络类型
@@ -65,7 +65,6 @@ object HiConnectivityReceiver : PhoneStateListener() {
             // 4G信号参数范围：-44 ~ -140 dBm
             notifySignalChanged(getSignalLevel(rsrp))
         } else {
-
         }
     }
 
@@ -99,7 +98,6 @@ object HiConnectivityReceiver : PhoneStateListener() {
                 // 注册广播接收器
                 startMonitoring()
             } else if (listeners.size > 1) {
-
             } else {
                 // do nothing
             }
@@ -135,5 +133,4 @@ object HiConnectivityReceiver : PhoneStateListener() {
     interface OnSignalChangedListener {
         fun onSignalChanged(signalLevel: Int)
     }
-
 }

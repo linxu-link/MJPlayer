@@ -6,7 +6,6 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
 
-
 /**
  * Gson 工具类，封装 JSON 序列化与反序列化操作
  */
@@ -57,7 +56,7 @@ class GsonUtils private constructor() {
          * @param clazz 目标类的 Class
          * @param <T>   目标类型
          * @return 转换后的对象，失败则返回 null
-        </T> */
+         </T> */
         fun <T> fromJson(json: String?, clazz: Class<T?>?): T? {
             if (json == null || json.isEmpty()) {
                 return null
@@ -77,7 +76,7 @@ class GsonUtils private constructor() {
          * @param type  泛型类型（通过 TypeToken 获取，如 new TypeToken<List></List><T>>(){}.getType()）
          * @param <T>   目标类型
          * @return 转换后的泛型对象，失败则返回 null
-        </T></T></T> */
+         </T></T></T> */
         fun <T> fromJson(json: String?, type: Type?): T? {
             if (json == null || json.isEmpty()) {
                 return null
@@ -97,7 +96,7 @@ class GsonUtils private constructor() {
          * @param clazz 集合中元素的 Class
          * @param <T>   元素类型
          * @return List 集合，失败则返回 null
-        </T> */
+         </T> */
         fun <T> jsonToList(json: String?, clazz: Class<T>): MutableList<T>? {
             // 构建 List<T> 类型
             val type = TypeToken.getParameterized(MutableList::class.java, clazz).getType()
@@ -113,11 +112,11 @@ class GsonUtils private constructor() {
          * @param <K>      键类型
          * @param <V>      值类型
          * @return Map 集合，失败则返回 null
-        </V></K> */
+         </V></K> */
         fun <K, V> jsonToMap(
             json: String?,
             keyClazz: Class<K?>,
-            valClazz: Class<V?>?
+            valClazz: Class<V?>?,
         ): MutableMap<K?, V?>? {
             // 构建 Map<K, V> 类型
             val type =
