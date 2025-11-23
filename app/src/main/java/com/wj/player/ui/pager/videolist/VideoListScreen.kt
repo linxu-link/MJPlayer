@@ -1,5 +1,7 @@
 package com.wj.player.ui.pager.videolist
 
+import android.Manifest
+import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -17,7 +19,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -64,7 +65,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,16 +75,18 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.rememberAsyncImagePainter
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.wj.player.R
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.ui.view.header.VideoListTopAppBar
 import com.wj.player.ui.view.text.HighlightedText
+import com.wj.player.utils.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
+import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.flow.Flow
-import java.text.SimpleDateFormat
-import java.util.Locale
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VideoListScreen(
     onNavigateToSearch: () -> Unit,
@@ -96,6 +98,27 @@ fun VideoListScreen(
     viewModel: VideoViewModel = hiltViewModel(),
     snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
+
+    // 权限请求
+    val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) listOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+        Manifest.permission.READ_MEDIA_VIDEO,
+        Manifest.permission.MANAGE_EXTERNAL_STORAGE,
+    ) else listOf(
+        Manifest.permission.READ_EXTERNAL_STORAGE,
+    )
+
+    MultiplePermissionsRequest(
+        permissions = permissions,
+        onAllGranted = {
+            viewModel.syncVideos()
+        },
+        onDenied = { deniedPermissions ->
+            HiLog.e("VideoListScreen onDenied $deniedPermissions")
+        }
+    )
+
+    // 主页
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
@@ -131,7 +154,6 @@ fun VideoListScreen(
         floatingActionButtonPosition = FabPosition.End,
     ) { innerPadding ->
 
-
         VideoListContent(
             items = uiState.videos,
             layoutType = uiState.layoutType,
@@ -152,6 +174,7 @@ fun VideoListScreen(
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

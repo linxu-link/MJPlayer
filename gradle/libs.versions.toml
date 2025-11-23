@@ -19,13 +19,15 @@ room = "2.8.3"
 ksp = "2.1.10-1.0.31"
 coil = "2.7.0"
 startup = "1.2.0"
-accompanistWebview = "0.30.1"
 media3 = "1.8.0"
 datastore = "1.1.7"
 hilt = "2.54"
 hiltExt = "1.3.0"
 hiltNavigationCompose = "1.3.0"
 timber = "5.0.1"
+accompanistPermissions = "0.30.0"
+accompanistWebview = "0.30.1"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -66,6 +68,9 @@ kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-cor
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+# google
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanistWebview" }
 # WorkManager
 androidx-workmanager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workManager" }
 # Room
@@ -82,8 +87,6 @@ okhttpLoggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-int
 # coil
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-# webview
-accompanist-webview = { module = "com.google.accompanist:accompanist-webview", version.ref = "accompanistWebview" }
 # media
 androix-media = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androix-media-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
@@ -127,6 +130,10 @@ androidx-base = [
     "androidx-lifecycle-viewmodel-savedstate",
     "androidx-appcompat",
     "androidx-core-ktx"
+]
+accompanist = [
+    "accompanist-permissions",
+    "accompanist-webview",
 ]
 paging = [
     "compose-paging",

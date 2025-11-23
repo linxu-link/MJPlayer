@@ -1,7 +1,10 @@
 package com.wujia.toolkit.jetpack.datastore
 
 import android.content.Context
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 /**
  * 统一的 DataStore 管理类
@@ -25,8 +28,10 @@ class HiDataStoreManager private constructor(context: Context) {
 //    private val protoManager = ProtoDataStoreManager.getInstance(context)
 
     // Preferences DataStore 方法
-    suspend fun <T> putPreference(key: String, value: T) {
-        preferencesManager.putValue(key, value)
+    fun <T> putPreference(key: String, value: T) {
+        CoroutineScope(Dispatchers.Default).launch {
+            preferencesManager.putValue(key, value)
+        }
     }
 
     fun <T> getPreference(key: String, defaultValue: T): Flow<T> {

@@ -45,7 +45,10 @@ android {
 
 dependencies {
     implementation(project(":toolkit"))
+    // androidx
     implementation(libs.bundles.androidx.base)
+    // accompanist
+    implementation(libs.bundles.accompanist)
     // compose
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
