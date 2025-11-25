@@ -1,6 +1,7 @@
 package com.wj.player.ui.pager.videolist
 
 import android.Manifest
+import android.graphics.Bitmap
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -54,16 +55,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -74,19 +78,22 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.wj.player.R
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.theme.size.LocalTypography
+import com.wj.player.ui.view.ImageVideo
+import com.wj.player.ui.view.TextBody
+import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.header.VideoListTopAppBar
 import com.wj.player.ui.view.text.HighlightedText
-import com.wj.player.utils.MultiplePermissionsRequest
+import com.wj.player.utils.permission.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
 import com.wujia.toolkit.utils.HiLog
+import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 import kotlinx.coroutines.flow.Flow
 
-@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VideoListScreen(
     onNavigateToSearch: () -> Unit,
@@ -103,7 +110,6 @@ fun VideoListScreen(
     val permissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) listOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.READ_MEDIA_VIDEO,
-        Manifest.permission.MANAGE_EXTERNAL_STORAGE,
     ) else listOf(
         Manifest.permission.READ_EXTERNAL_STORAGE,
     )
@@ -115,7 +121,7 @@ fun VideoListScreen(
         },
         onDenied = { deniedPermissions ->
             HiLog.e("VideoListScreen onDenied $deniedPermissions")
-        }
+        },
     )
 
     // 主页
@@ -375,30 +381,13 @@ private fun VideoGroupItem(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
+
+            VideoGroupItemTitle(
                 modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = date,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                )
-                Text(
-                    text = "|",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                    modifier = Modifier.padding(horizontal = 4.dp),
-                )
-                Text(
-                    text = "${videos.size}项",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                )
-            }
+                videoSize = videos.size,
+                date = date,
+            )
+
             IconButton(onClick = onToggleExpand) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
@@ -526,27 +515,16 @@ private fun VideoThumbnailGroupItem(
             .fillMaxWidth()
             .clickable { onVideoClick(video) }, // 处理点击事件
     ) {
-        // 视频缩略图
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = if (video.thumbnailPath.isNullOrEmpty()) {
-                    video.path
-                } else {
-                    video.thumbnailPath
-                },
-                error = painterResource(id = R.drawable.ic_error),
-                contentScale = ContentScale.Crop,
-            ),
-            contentDescription = video.title,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop,
+        ImageVideo(
+            videoTitle = video.title,
+            videoId = video.id,
+            videoPath = video.path,
+            thumbnailPath = video.thumbnailPath ?: "",
         )
 
-        // 视频时长
-        Text(
+        TextCaption(
             text = VideoTimeUtils.formatVideoDuration(video.duration),
-            fontSize = 12.sp,
-            color = Color.White,
+            color = LocalColorScheme.current.white,
             modifier = Modifier
                 .padding(4.dp)
                 .clip(RoundedCornerShape(4.dp))
@@ -575,63 +553,20 @@ private fun VideoThumbnailListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // 视频缩略图（固定宽高比 16:9，宽度占比1/4）
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = if (video.thumbnailPath.isNullOrEmpty()) video.path else video.thumbnailPath,
-                error = painterResource(id = R.drawable.ic_error),
-                contentScale = ContentScale.Crop,
-            ),
-            contentDescription = video.title,
-            modifier = Modifier
-                .weight(1f)
-                .aspectRatio(16f / 9f)
-                .clip(RoundedCornerShape(4.dp)),
-            contentScale = ContentScale.Crop,
+        ImageVideo(
+            videoTitle = video.title,
+            videoId = video.id,
+            videoPath = video.path,
+            thumbnailPath = video.thumbnailPath ?: "",
+            modifier = Modifier.weight(1f),
         )
 
-        // 视频信息（标题 + 时长，占比3/4）
         Column(
             modifier = Modifier.weight(3f),
         ) {
-            HighlightedText(
-                text = video.title,
-                keyword = "",
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
-            )
-
-            // 关键：用权重Spacer占满中间空白区域，将底部Row推到最底部
+            TextBody(text = video.title)
             Spacer(modifier = Modifier.size(14.dp))
-
-            Row(
-                modifier = Modifier,
-                horizontalArrangement = Arrangement.spacedBy(4.dp), // 优化分隔符间距
-            ) {
-                Text(
-                    text = VideoTimeUtils.formatVideoSize(video.size),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier,
-                )
-
-                Text(
-                    text = "|",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                    modifier = Modifier,
-                )
-
-                Text(
-                    text = VideoTimeUtils.formatVideoSimpleDate(video.updateTime),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = Modifier,
-                )
-            }
+            VideoItemDesc(video = video)
         }
     }
 }

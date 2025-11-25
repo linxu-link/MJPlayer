@@ -2,6 +2,7 @@ package com.wj.player.ui.view.player
 
 import android.content.Context
 import android.net.Uri
+import androidx.media3.common.C
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.PlaybackParameters
@@ -11,8 +12,11 @@ import androidx.media3.exoplayer.ExoPlayer
 import com.wj.player.ui.view.player.base.BasePlayerController
 import com.wj.player.ui.view.player.base.PlaybackState
 import com.wj.player.ui.view.player.base.PlayerState
+import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -22,12 +26,14 @@ import kotlinx.coroutines.launch
  */
 @UnstableApi
 class ExoplayerControllerImpl(
-    context: Context,
+    private val context: Context,
     private val config: PlayerConfig,
 ) : BasePlayerController() {
 
     private val _playerState = MutableStateFlow(PlayerState())
     override val playerState = _playerState.asStateFlow()
+
+    private var progressJob: Job? = null
 
     // ExoPlayer 实例
     val exoPlayer: ExoPlayer = ExoPlayer.Builder(context)
@@ -43,43 +49,45 @@ class ExoplayerControllerImpl(
     }
 
     override fun initializePlayer() {
-        exoPlayer.addListener(object : Player.Listener {
-            override fun onPlaybackStateChanged(state: Int) {
-                val playbackState = when (state) {
-                    Player.STATE_READY -> PlaybackState.READY
-                    Player.STATE_BUFFERING -> PlaybackState.BUFFERING
-                    Player.STATE_ENDED -> PlaybackState.ENDED
-                    Player.STATE_IDLE -> PlaybackState.IDLE
-                    else -> PlaybackState.IDLE
+        exoPlayer.addListener(
+            object : Player.Listener {
+                override fun onPlaybackStateChanged(state: Int) {
+                    val playbackState = when (state) {
+                        Player.STATE_READY -> PlaybackState.READY
+                        Player.STATE_BUFFERING -> PlaybackState.BUFFERING
+                        Player.STATE_ENDED -> PlaybackState.ENDED
+                        Player.STATE_IDLE -> PlaybackState.IDLE
+                        else -> PlaybackState.IDLE
+                    }
+                    handlePlaybackStateChange(exoPlayer.isPlaying, playbackState)
                 }
-                handlePlaybackStateChange(exoPlayer.isPlaying, playbackState)
-            }
 
-            override fun onPositionDiscontinuity(
-                oldPosition: Player.PositionInfo,
-                newPosition: Player.PositionInfo,
-                reason: Int,
-            ) {
-                super.onPositionDiscontinuity(oldPosition, newPosition, reason)
-                handlePositionUpdate(newPosition.positionMs, exoPlayer.duration)
-            }
+                override fun onPlayerError(error: PlaybackException) {
+                    super.onPlayerError(error)
+                    handleError(error)
+                }
 
-            override fun onPlayerError(error: PlaybackException) {
-                super.onPlayerError(error)
-                handleError(error)
-            }
+                override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
+                    super.onPlaybackParametersChanged(playbackParameters)
+                    handlePlaybackSpeedUpdate(playbackParameters.speed)
+                }
 
-            override fun onPlaybackParametersChanged(playbackParameters: PlaybackParameters) {
-                super.onPlaybackParametersChanged(playbackParameters)
-                handlePlaybackSpeedUpdate(playbackParameters.speed)
-            }
-
-            override fun onEvents(player: Player, events: Player.Events) {
-                super.onEvents(player, events)
-                // 更新缓冲状态和当前播放位置
-                handleBufferingUpdate(player.bufferedPercentage)
-            }
-        })
+                override fun onEvents(player: Player, events: Player.Events) {
+                    super.onEvents(player, events)
+                    // 更新缓冲状态和当前播放位置
+                    handleBufferingUpdate(player.bufferedPercentage)
+                    // 更新进度条
+                    if (player.isPlaying) {
+                        startProgressTracking()
+                    } else {
+                        stopProgressTracking()
+                    }
+                    val currentPos = getCurrentPosition()
+                    val duration = getDuration()
+                    handlePositionUpdate(currentPos, duration)
+                }
+            },
+        )
     }
 
     override fun loadMedia(uri: Uri) {
@@ -88,13 +96,22 @@ class ExoplayerControllerImpl(
     }
 
     override fun playPause() {
-        if (exoPlayer.isPlaying) exoPlayer.pause() else exoPlayer.play()
+        if (exoPlayer.isPlaying) {
+            exoPlayer.pause()
+        } else {
+            if (exoPlayer.playbackState == Player.STATE_ENDED) {
+                exoPlayer.seekTo(0)
+                exoPlayer.play()
+            } else {
+                exoPlayer.play()
+            }
+        }
         handlePlaybackStateChange(exoPlayer.isPlaying, PlaybackState.READY)
     }
 
     override fun seekTo(position: Long) {
         exoPlayer.seekTo(position)
-        handlePositionUpdate(position, exoPlayer.duration)
+        handlePositionUpdate(position, getDuration())
     }
 
     override fun setPlaybackSpeed(speed: Float) {
@@ -104,6 +121,7 @@ class ExoplayerControllerImpl(
 
     override fun release() {
         exoPlayer.release()
+        stopProgressTracking()
     }
 
     override fun getPlayer(): Player {
@@ -112,19 +130,69 @@ class ExoplayerControllerImpl(
 
     override fun updateState(update: PlayerState.() -> PlayerState) {
         CoroutineScope(Dispatchers.Main).launch {
-            _playerState.value = _playerState.value.update()
+            _playerState.value = update(_playerState.value)
         }
     }
-}
 
-// 辅助函数用于复制配置
-@UnstableApi
-private fun PlayerConfig.copy(
-    repeatMode: Int = this.repeatMode,
-    seekForwardIncrementMs: Long = this.seekForwardIncrementMs,
-    seekBackIncrementMs: Long = this.seekBackIncrementMs,
-    cacheConfig: PlayerConfig.CacheConfig? = this.cacheConfig,
-) = PlayerConfig(repeatMode, seekForwardIncrementMs, seekBackIncrementMs, cacheConfig)
+    // 播放器建造者
+    @UnstableApi
+    class Builder(private val context: Context) {
+        private var config = PlayerConfig()
+
+        fun setRepeatMode(mode: Int) = apply { config = config.copy(repeatMode = mode) }
+        fun setSeekForwardIncrementMs(ms: Long) =
+            apply { config = config.copy(seekForwardIncrementMs = ms) }
+
+        fun setSeekBackIncrementMs(ms: Long) =
+            apply { config = config.copy(seekBackIncrementMs = ms) }
+
+        fun enableCache(cacheSize: Long, cacheDirectory: String) = apply {
+            config = config.copy(cacheConfig = PlayerConfig.CacheConfig(cacheSize, cacheDirectory))
+        }
+
+        fun build(): ExoplayerControllerImpl {
+            return ExoplayerControllerImpl(context, config)
+        }
+    }
+
+
+    // 启动实时进度监听
+    private fun startProgressTracking() {
+        stopProgressTracking()
+        progressJob = CoroutineScope(Dispatchers.Main).launch {
+            while (true) {
+                if (exoPlayer.isPlaying) {
+                    val currentPos = getCurrentPosition()
+                    val duration = getDuration()
+                    handlePositionUpdate(currentPos, duration)
+                }
+                delay(16)
+            }
+        }
+    }
+
+    // 停止进度监听（如页面销毁时）
+    private fun stopProgressTracking() {
+        progressJob?.cancel()
+    }
+
+    private fun getCurrentPosition(): Long {
+        val currentPosition = exoPlayer.currentPosition
+        if (currentPosition == C.TIME_UNSET) {
+            return 0
+        }
+        return currentPosition
+    }
+
+    private fun getDuration(): Long {
+        val duration = exoPlayer.duration
+        if (duration == C.TIME_UNSET) {
+            return 0
+        }
+        return duration
+    }
+
+}
 
 // 播放器配置类
 class PlayerConfig(
@@ -140,21 +208,13 @@ class PlayerConfig(
     )
 }
 
-// 播放器建造者
+// 辅助函数用于复制配置
 @UnstableApi
-class Builder(private val context: Context) {
-    private var config = PlayerConfig()
+private fun PlayerConfig.copy(
+    repeatMode: Int = this.repeatMode,
+    seekForwardIncrementMs: Long = this.seekForwardIncrementMs,
+    seekBackIncrementMs: Long = this.seekBackIncrementMs,
+    cacheConfig: PlayerConfig.CacheConfig? = this.cacheConfig,
+) = PlayerConfig(repeatMode, seekForwardIncrementMs, seekBackIncrementMs, cacheConfig)
 
-    fun setRepeatMode(mode: Int) = apply { config = config.copy(repeatMode = mode) }
-    fun setSeekForwardIncrementMs(
-        ms: Long,
-    ) = apply { config = config.copy(seekForwardIncrementMs = ms) }
-    fun setSeekBackIncrementMs(ms: Long) = apply { config = config.copy(seekBackIncrementMs = ms) }
-    fun enableCache(cacheSize: Long, cacheDirectory: String) = apply {
-        config = config.copy(cacheConfig = PlayerConfig.CacheConfig(cacheSize, cacheDirectory))
-    }
 
-    fun build(): ExoplayerControllerImpl {
-        return ExoplayerControllerImpl(context, config)
-    }
-}

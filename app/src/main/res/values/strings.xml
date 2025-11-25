@@ -32,12 +32,15 @@
     <string name="loading_hint">正在搜索...</string>
 
     <!-- strings.xml -->
-    <string name="videos_loaded_success">视频加载成功</string>
+    <string name="videos_loaded_success">视频已经加载</string>
     <string name="failed_to_load_videos">视频加载失败，请重试</string>
 
     <!-- 权限弹窗 -->
-    <string name="permission_rationale_title">需要权限</string>
-    <string name="permission_rationale_message">MJPlayer需要%1$s权限才能正常使用，是否继续授权？</string>
+    <string name="permission_rationale_title">需要您的授权</string>
+    <string name="permission_rationale_message">为了让MJPlayer正常为你提供播放、缓存等核心功能，需要获取%s权限，是否继续授权？</string>
+    <string name="permission_video">视频管理</string>
+    <string name="permission_storage">外部存储</string>
+
 
     <string name="nav_all">All</string>
     <string name="nav_active">Active</string>
@@ -47,4 +50,13 @@
     <string name="refresh">Refresh</string>
     <string name="menu_back">Back</string>
     <string name="search">Search</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+    <string name="error_video_not_found">视频资源加载出错</string>
+    <string name="speed_selected">"（已选）"</string>
+    <string name="normal_speed">倍速</string>
+    <string name="theme_adaptive">自适应</string>
+    <string name="theme_light">浅色主题</string>
+    <string name="theme_dark">深色主题</string>
+
 </resources>

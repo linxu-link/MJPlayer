@@ -8,7 +8,7 @@ import dagger.hilt.android.HiltAndroidApp
 import timber.log.Timber
 import timber.log.Timber.DebugTree
 
-private const val PREFIX = "MJPlayer_"
+private const val PREFIX = ""
 
 @HiltAndroidApp
 class MJPlayerApp : HiApplication() {

@@ -1,11 +1,9 @@
 package com.wj.player.ui.view.text
 
-import androidx.compose.foundation.background
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -70,6 +68,7 @@ fun HighlightedText(
     // 显示带高亮的文本
     Text(
         modifier = modifier,
+        maxLines = 1,
         text = annotatedText,
         style = style,
     )

@@ -63,6 +63,7 @@ import com.wj.player.R
 import com.wj.player.data.entity.SearchHistory
 import com.wj.player.data.entity.Video
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.ui.view.ImageVideo
 import com.wj.player.ui.view.header.SearchTopAppBar
 import com.wj.player.ui.view.text.HighlightedText
 import com.wj.player.utils.VideoTimeUtils
@@ -255,19 +256,12 @@ private fun VideoThumbnailListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        // 视频缩略图（固定宽高比 16:9，宽度占比1/4）
-        Image(
-            painter = rememberAsyncImagePainter(
-                model = if (video.thumbnailPath.isNullOrEmpty()) video.path else video.thumbnailPath,
-                error = painterResource(id = R.drawable.ic_error),
-                contentScale = ContentScale.Crop,
-            ),
-            contentDescription = video.title,
-            modifier = Modifier
-                .weight(1f)
-                .aspectRatio(16f / 9f)
-                .clip(RoundedCornerShape(4.dp)),
-            contentScale = ContentScale.Crop,
+        ImageVideo(
+            videoTitle = video.title,
+            videoId = video.id,
+            videoPath = video.path,
+            thumbnailPath = video.thumbnailPath ?: "",
+            modifier = Modifier.weight(1f),
         )
 
         // 视频信息（标题 + 时长，占比3/4）

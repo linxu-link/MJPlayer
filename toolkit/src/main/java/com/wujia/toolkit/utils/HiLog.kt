@@ -1,5 +1,7 @@
 package com.wujia.toolkit.utils
 
+import android.util.Log
+
 class HiLog {
     interface HiLogDelegate {
         fun e(tag: String, msg: String, vararg obj: Any)
@@ -12,6 +14,9 @@ class HiLog {
     companion object {
         private var sDelegate: HiLogDelegate? = null
         private val LOG_CLASS_NAME = HiLog::class.java.name
+        private const val VM_STACK = "dalvik.system.VMStack"
+        private const val JAVA_LANG_THREAD = "java.lang.Thread"
+
 
         fun setDelegate(delegate: HiLogDelegate) {
             sDelegate = delegate
@@ -25,7 +30,7 @@ class HiLog {
             // 遍历调用栈，找到第一个非HiLog的调用者
             for (element in stackTrace) {
                 val className = element.className
-                if (className != LOG_CLASS_NAME) {
+                if (!className.contains(LOG_CLASS_NAME) && className != JAVA_LANG_THREAD && className != VM_STACK) {
                     // 提取简单类名（去掉包名）
                     val lastDotIndex = className.lastIndexOf('.')
                     return if (lastDotIndex != -1 && lastDotIndex < className.length - 1) {

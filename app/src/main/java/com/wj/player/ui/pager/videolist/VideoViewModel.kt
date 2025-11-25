@@ -12,6 +12,7 @@ import com.wj.player.domian.GetPagingVideosUseCase
 import com.wj.player.utils.WhileUiSubscribed
 import com.wujia.toolkit.utils.HiLog
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -69,8 +70,12 @@ class VideoViewModel @Inject constructor(
         syncVideos()
     }
 
+    private var syncStartMills = 0L
+
     // 加载视频（首次加载/手动刷新）
     fun syncVideos() {
+        // 避免重复同步（如快速点击刷新）
+        syncStartMills = System.currentTimeMillis()
         _isLoading.value = true // 开始加载
         viewModelScope.launch {
             try {
@@ -81,6 +86,10 @@ class VideoViewModel @Inject constructor(
                 _userMessage.value = R.string.failed_to_load_videos // 加载失败提示
                 e.printStackTrace()
             } finally {
+                val syncEndMills = System.currentTimeMillis() - syncStartMills
+                if (syncEndMills < 1000) {
+                    delay(1000)
+                }
                 _isLoading.value = false // 结束加载（无论成功失败）
             }
         }

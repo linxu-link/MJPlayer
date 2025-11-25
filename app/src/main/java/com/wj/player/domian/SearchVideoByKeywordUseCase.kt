@@ -8,8 +8,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-private const val TAG = "SearchVideoByKeywordUseCase"
-
 // 1. 搜索视频用例：仅负责“获取数据+筛选”，不处理历史保存
 class SearchVideoByKeywordUseCase @Inject constructor(
     private val getCachedVideosUseCase: GetCachedVideosUseCase,

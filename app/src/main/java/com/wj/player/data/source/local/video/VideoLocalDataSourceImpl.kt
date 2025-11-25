@@ -1,5 +1,6 @@
 package com.wj.player.data.source.local.video
 
+import android.content.ContentUris
 import android.content.Context
 import android.database.ContentObserver
 import android.net.Uri
@@ -7,6 +8,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.paging.PagingSource
 import com.wj.player.data.source.local.video.room.VideoDao
 import com.wj.player.data.source.local.video.room.VideoEntity
@@ -36,6 +38,16 @@ class VideoLocalDataSourceImpl @Inject constructor(
     @IODispatcher
     private val ioDispatcher: CoroutineDispatcher,
 ) : VideoLocalDataSource {
+
+    private   val projection = arrayOf(
+        MediaStore.Video.Media._ID, // 视频ID
+        MediaStore.Video.Media.TITLE, // 标题
+        MediaStore.Video.Media.DATA, // 文件路径
+        MediaStore.Video.Media.DURATION, // 时长
+        MediaStore.Video.Media.SIZE, // 大小
+        MediaStore.Video.Media.DATE_MODIFIED, // 最后修改时间
+        MediaStore.Video.Media.MINI_THUMB_MAGIC, // 缩略图 Uri
+    )
 
     init {
         // 1. 创建ContentObserver，监听MediaStore视频变化
@@ -68,51 +80,111 @@ class VideoLocalDataSourceImpl @Inject constructor(
         } else {
             MediaStore.Video.Media.EXTERNAL_CONTENT_URI
         }
-        val projection = arrayOf(
-            MediaStore.Video.Media._ID, // 视频ID
-            MediaStore.Video.Media.TITLE, // 标题
-            MediaStore.Video.Media.DATA, // 文件路径
-            MediaStore.Video.Media.DURATION, // 时长
-            MediaStore.Video.Media.SIZE, // 大小
-            MediaStore.Video.Media.DATE_MODIFIED, // 最后修改时间
-            MediaStore.Video.Media.MINI_THUMB_MAGIC, // 缩略图 Uri
-        )
         // 按修改时间倒序（最新的在前）
         val sortOrder = "${MediaStore.Video.Media.DATE_MODIFIED} DESC"
 
-        // 2. 查询并转换为Video列表
         val videos = mutableListOf<VideoEntity>()
         context.contentResolver.query(videoUri, projection, null, null, sortOrder)?.use { cursor ->
             while (cursor.moveToNext()) {
+                val videoId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+                val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+
+                // 新的缩略图获取方法
+                val thumbnailPath = getVideoThumbnailPath(context, videoId)
+
                 val video = VideoEntity(
-                    id = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID)),
-                    title = cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE),
-                    ),
-                    path = cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA),
-                    ),
-                    duration = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION),
-                    ),
-                    size = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE),
-                    ),
-                    updateTime = cursor.getLong(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED),
-                    ),
-                    thumbnailPath = cursor.getString(
-                        cursor.getColumnIndexOrThrow(MediaStore.Video.Media.MINI_THUMB_MAGIC),
-                    ),
+                    id = videoId,
+                    title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)),
+                    path = path,
+                    duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)),
+                    size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
+                    updateTime = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)),
+                    thumbnailPath = thumbnailPath,
                     lastScanTime = System.currentTimeMillis(),
                 )
-                HiLog.i("查询到视频：${video.updateTime} ${video.title}")
+                HiLog.e("video: ${video.thumbnailPath}")
                 videos.add(video)
             }
         }
         // 3. 批量更新Room数据库（先删后插，避免重复）
         videoDao.deleteAll()
         videoDao.insertVideos(videos)
+    }
+
+    /**
+     * 统一的缩略图获取方法
+     */
+    private fun getVideoThumbnailPath(context: Context, videoId: Long): String {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // API 29+：使用新的缩略图获取方式
+            getModernThumbnailPath(context, videoId)
+        } else {
+            // 低版本：使用原有的查询方式
+            getLegacyThumbnailPath(context, videoId) ?: ""
+        }
+    }
+
+    /**
+     * 现代 Android 版本获取缩略图的方法（API 29+）
+     */
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun getModernThumbnailPath(context: Context, videoId: Long): String {
+        return try {
+            // 方法1：使用 Thumbnails.getThumbnail 获取缩略图
+            val thumbnailUri = MediaStore.Video.Thumbnails.getContentUri(MediaStore.VOLUME_EXTERNAL)
+            val thumbnailProjection = arrayOf(MediaStore.Video.Thumbnails.DATA)
+            val selection = "${MediaStore.Video.Thumbnails.VIDEO_ID} = ?"
+            val selectionArgs = arrayOf(videoId.toString())
+
+            context.contentResolver.query(
+                thumbnailUri,
+                thumbnailProjection,
+                selection,
+                selectionArgs,
+                null
+            )?.use { thumbCursor ->
+                if (thumbCursor.moveToFirst()) {
+                    thumbCursor.getString(thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA))
+                } else {
+                    // 如果查询不到，返回内容 URI
+                    ContentUris.withAppendedId(
+                        MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                        videoId
+                    ).toString()
+                }
+            } ?: ContentUris.withAppendedId(
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
+                videoId
+            ).toString()
+        } catch (e: Exception) {
+            HiLog.e(TAG, "获取缩略图失败: ${e.message}")
+            // 返回视频的内容 URI 作为备用
+            ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoId).toString()
+        }
+    }
+
+    /**
+     * 低版本获取视频缩略图路径（保持不变）
+     */
+    private fun getLegacyThumbnailPath(context: Context, videoId: Long): String? {
+        val thumbUri = MediaStore.Video.Thumbnails.EXTERNAL_CONTENT_URI
+        val thumbProjection = arrayOf(MediaStore.Video.Thumbnails.DATA)
+        val selection = "${MediaStore.Video.Thumbnails.VIDEO_ID} = ?"
+        val selectionArgs = arrayOf(videoId.toString())
+
+        return context.contentResolver.query(
+            thumbUri,
+            thumbProjection,
+            selection,
+            selectionArgs,
+            null
+        )?.use { thumbCursor ->
+            if (thumbCursor.moveToFirst()) {
+                thumbCursor.getString(thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA))
+            } else {
+                null
+            }
+        }
     }
 
     // 监听视频变化：通过Room的COUNT查询，当数据总数变化时发射信号
@@ -135,4 +207,5 @@ class VideoLocalDataSourceImpl @Inject constructor(
     override suspend fun getLatestCacheTime(): Long {
         return videoDao.getLatestCacheTime()
     }
+
 }

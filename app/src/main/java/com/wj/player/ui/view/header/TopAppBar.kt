@@ -54,26 +54,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wj.player.R
 import com.wj.player.ui.theme.MJPlayerTheme
+import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.view.TextTitle
 import com.wujia.toolkit.utils.HiLog
-
-@Composable
-fun CommonTopAppBar(
-    @StringRes title: Int,
-    onBack: () -> Unit,
-) {
-    TopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
-        ),
-        title = { Text(text = stringResource(title)) },
-        navigationIcon = {
-            IconButton(onClick = onBack) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(id = R.string.menu_back))
-            }
-        },
-    )
-}
-
 
 @Composable
 fun VideoListTopAppBar(
@@ -85,12 +68,16 @@ fun VideoListTopAppBar(
 ) {
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
+            containerColor = LocalColorScheme.current.theme,
         ),
         title = {},
         navigationIcon = {
             IconButton(onClick = onSearch) {
-                Icon(Icons.Filled.Search, stringResource(id = R.string.search))
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(id = R.string.search),
+                    tint = LocalColorScheme.current.textPrimary,
+                )
             }
         },
         actions = {
@@ -102,6 +89,30 @@ fun VideoListTopAppBar(
                 onClickThemeSettings = onClickThemeSettings,
                 onClickVideoSettings = onClickVideoSettings,
             )
+        },
+    )
+}
+
+@Composable
+fun CommonTopAppBar(
+    @StringRes title: Int,
+    onBack: () -> Unit,
+) {
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = LocalColorScheme.current.theme,
+        ),
+        title = {
+            TextTitle(text = stringResource(title),)
+        },
+        navigationIcon = {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(id = R.string.menu_back),
+                    tint = LocalColorScheme.current.textPrimary,
+                )
+            }
         },
     )
 }
@@ -121,12 +132,16 @@ fun SearchTopAppBar(
 
     TopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color.White,
+            containerColor = LocalColorScheme.current.theme,
         ),
         title = {},
         navigationIcon = {
             IconButton(onClick = { onBack() }) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "返回")
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "返回",
+                    tint = LocalColorScheme.current.textPrimary,
+                )
             }
         },
         actions = {
@@ -163,9 +178,9 @@ fun SearchTopAppBar(
                             modifier = Modifier.fillMaxHeight(), // 确保 Row 填满高度
                         ) {
                             Icon(
-                                Icons.Default.Search,
+                                imageVector = Icons.Default.Search,
                                 contentDescription = "搜索",
-                                tint = Color.Gray,
+                                tint = LocalColorScheme.current.textSecondary,
                                 modifier = Modifier.size(20.dp), // 统一图标尺寸
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -206,8 +221,9 @@ private fun FilterMenu(
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(
-                painterResource(id = R.drawable.ic_filter_list),
-                stringResource(id = R.string.menu_filter),
+                painter = painterResource(id = R.drawable.ic_filter_list),
+                contentDescription = stringResource(id = R.string.menu_filter),
+                tint = LocalColorScheme.current.textPrimary,
             )
         },
     ) { closeMenu ->
@@ -235,7 +251,11 @@ private fun SettingsMenu(
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
-            Icon(Icons.Filled.MoreVert, stringResource(id = R.string.menu_settings_title))
+            Icon(
+                imageVector = Icons.Filled.MoreVert,
+                contentDescription = stringResource(id = R.string.menu_settings_title),
+                tint = LocalColorScheme.current.textPrimary,
+            )
         },
     ) { closeMenu ->
         DropdownMenuItem(

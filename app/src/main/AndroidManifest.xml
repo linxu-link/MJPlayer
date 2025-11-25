@@ -20,10 +20,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <!-- Android 13+：媒体文件读取权限（视频属于媒体文件） -->
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
-    <!-- 允许查询媒体文件（必须声明） -->
-    <uses-permission
-        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
 
     <application
         android:name=".MJPlayerApp"
@@ -37,6 +33,7 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.MainActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize"
             android:exported="true"
             android:theme="@style/Theme.MagicPlayer">
             <intent-filter>
