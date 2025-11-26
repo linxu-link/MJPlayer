@@ -55,8 +55,10 @@
     <string name="error_video_not_found">视频资源加载出错</string>
     <string name="speed_selected">"（已选）"</string>
     <string name="normal_speed">倍速</string>
-    <string name="theme_adaptive">自适应</string>
-    <string name="theme_light">浅色主题</string>
-    <string name="theme_dark">深色主题</string>
+    <string name="theme_adaptive">Adaptive</string>
+    <string name="theme_light">Light\nTheme</string>
+    <string name="theme_dark">Dark\nTheme</string>
+    <string name="classic_themes">经典主题</string>
+    <string name="other_themes">其他主题</string>
 
 </resources>

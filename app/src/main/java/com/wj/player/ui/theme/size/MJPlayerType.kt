@@ -9,6 +9,7 @@ data class MJPlayerTypography(
     val title: TextStyle,
     val body: TextStyle,
     val caption: TextStyle,
+    val small: TextStyle,
     val button: TextStyle,
 )
 
@@ -18,5 +19,6 @@ val LocalTypography = compositionLocalOf<MJPlayerTypography> {
         body = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Medium),
         button = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Medium),
         caption = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Normal),
+        small = TextStyle(fontSize = 12.sp, fontWeight = FontWeight.Normal),
     )
 }

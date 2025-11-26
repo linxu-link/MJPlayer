@@ -5,7 +5,9 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import com.wj.player.MJConstants
 import com.wj.player.R
+import com.wj.player.data.entity.LAYOUT_TYPE_LIST
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.domian.GetPagingVideosUseCase
@@ -25,7 +27,7 @@ import javax.inject.Inject
 // 视频列表UI状态（仅保留核心状态字段）
 data class VideoListUiState(
     val videos: Flow<PagingData<VideoEntity>> = flowOf(PagingData.empty()), // 分页视频数据
-    val layoutType: LayoutType = LayoutType.List, // 当前筛选类型
+    val layoutType: Int = LAYOUT_TYPE_LIST, // 当前筛选类型
     val isLoading: Boolean = false, // 加载状态标记
     val userMessage: Int? = null, // 用户提示消息（资源ID）
 )
@@ -43,10 +45,11 @@ class VideoViewModel @Inject constructor(
     private val _userMessage = MutableStateFlow<Int?>(null)
 
     // 布局类型（私有可变流）
-    private val _layoutType = MutableStateFlow(LayoutType.List)
+    private val _layoutType = MutableStateFlow<Int>(LAYOUT_TYPE_LIST)
 
     // 分页视频数据流（直接从用例获取，无需筛选）
     private val _videosFlow = getPagingVideosUseCase().cachedIn(viewModelScope) // 分页流缓存，避免重复加载
+
 
     // 对外暴露的UI状态（聚合所有状态流）
     val uiState: StateFlow<VideoListUiState> = combine(
@@ -67,6 +70,7 @@ class VideoViewModel @Inject constructor(
     )
 
     init {
+        _layoutType.value = getLayoutType()
         syncVideos()
     }
 
@@ -110,7 +114,11 @@ class VideoViewModel @Inject constructor(
         }
     }
 
-    fun setLayoutType(type: LayoutType) {
+    fun setLayoutType(type: Int) {
         _layoutType.value = type
+        MJConstants.Theme.setLayoutType(type)
     }
+
+    fun getLayoutType() = MJConstants.Theme.getLayoutType()
+
 }

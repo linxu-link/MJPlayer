@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wj.player.R
+import com.wj.player.ui.view.noRippleClickable
 
 data class SheetOption(
     val title: String,
@@ -118,7 +119,7 @@ private fun SheetOptionItem(option: SheetOption) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(
+            .noRippleClickable(
                 onClick = { option.onClick() },
             )
             .padding(horizontal = 16.dp, vertical = 8.dp),

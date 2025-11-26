@@ -3,9 +3,10 @@
 package com.wj.player.ui.view.header
 
 import androidx.annotation.StringRes
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.DropdownMenu
@@ -50,16 +52,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wj.player.MJConstants
 import com.wj.player.R
+import com.wj.player.data.entity.LAYOUT_TYPE_GRID
+import com.wj.player.data.entity.LAYOUT_TYPE_LIST
+import com.wj.player.data.entity.LayoutType
 import com.wj.player.ui.theme.MJPlayerTheme
 import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextTitle
-import com.wujia.toolkit.utils.HiLog
 
 @Composable
 fun VideoListTopAppBar(
+    layoutType: Int,
     onSearch: () -> Unit,
     onFilterList: () -> Unit,
     onFilterGrid: () -> Unit,
@@ -82,6 +90,7 @@ fun VideoListTopAppBar(
         },
         actions = {
             FilterMenu(
+                layoutType,
                 onFilterList,
                 onFilterGrid,
             )
@@ -103,12 +112,12 @@ fun CommonTopAppBar(
             containerColor = LocalColorScheme.current.theme,
         ),
         title = {
-            TextTitle(text = stringResource(title),)
+            TextTitle(text = stringResource(title))
         },
         navigationIcon = {
             IconButton(onClick = onBack) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = MJConstants.Icon.ARROW_BACK,
                     contentDescription = stringResource(id = R.string.menu_back),
                     tint = LocalColorScheme.current.textPrimary,
                 )
@@ -138,7 +147,7 @@ fun SearchTopAppBar(
         navigationIcon = {
             IconButton(onClick = { onBack() }) {
                 Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    imageVector = MJConstants.Icon.ARROW_BACK,
                     contentDescription = "返回",
                     tint = LocalColorScheme.current.textPrimary,
                 )
@@ -215,8 +224,9 @@ fun SearchTopAppBar(
 
 @Composable
 private fun FilterMenu(
+    layoutType: Int,
     onFilterList: () -> Unit,
-    onFilterPic: () -> Unit,
+    onFilterGrid: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
@@ -232,14 +242,24 @@ private fun FilterMenu(
                 onFilterList()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.menu_filter_list)) },
+            text = {
+                SelectText(
+                    text = stringResource(id = R.string.menu_filter_list),
+                    isSelected = layoutType == LAYOUT_TYPE_LIST,
+                )
+            },
         )
         DropdownMenuItem(
             onClick = {
-                onFilterPic()
+                onFilterGrid()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.menu_filter_pic)) },
+            text = {
+                SelectText(
+                    text = stringResource(id = R.string.menu_filter_pic),
+                    isSelected = layoutType == LAYOUT_TYPE_GRID,
+                )
+            },
         )
     }
 }
@@ -263,35 +283,77 @@ private fun SettingsMenu(
                 onClickThemeSettings()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.menu_settings_theme)) },
+            text = {
+                TextCaption(
+                    text = stringResource(id = R.string.menu_settings_theme),
+                    color = LocalColorScheme.current.textPrimary,
+                )
+            },
         )
         DropdownMenuItem(
             onClick = {
                 onClickVideoSettings()
                 closeMenu()
             },
-            text = { Text(text = stringResource(id = R.string.menu_settings_video)) },
+            text = {
+                TextCaption(
+                    text = stringResource(id = R.string.menu_settings_video),
+                    color = LocalColorScheme.current.textPrimary,
+                )
+            },
         )
     }
 }
 
 @Composable
 private fun TopAppBarDropdownMenu(
+    offset: DpOffset = DpOffset((-16).dp, 0.dp),
     iconContent: @Composable () -> Unit,
     content: @Composable ColumnScope.(() -> Unit) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(modifier = Modifier.wrapContentSize(Alignment.TopEnd)) {
+    Box(
+        modifier = Modifier
+            .wrapContentSize(Alignment.TopEnd),
+    ) {
         IconButton(onClick = { expanded = !expanded }) {
             iconContent()
         }
         DropdownMenu(
+            shadowElevation = 2.dp,
+            offset = offset,
             expanded = expanded,
+            shape = RoundedCornerShape(12.dp),
+            containerColor = LocalColorScheme.current.surface,
             onDismissRequest = { expanded = false },
             modifier = Modifier.wrapContentSize(Alignment.TopEnd),
         ) {
             content { expanded = !expanded }
+        }
+    }
+}
+
+@Composable
+private fun SelectText(text: String, isSelected: Boolean) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween,
+    ) {
+        TextCaption(
+            text = text,
+            color = if (isSelected) LocalColorScheme.current.accent else LocalColorScheme.current.textPrimary,
+        )
+
+        Spacer(modifier = Modifier.width(25.dp))
+
+        if (isSelected) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = LocalColorScheme.current.accent,
+                modifier = Modifier.size(18.dp),
+            )
         }
     }
 }
@@ -301,30 +363,15 @@ private fun TopAppBarDropdownMenu(
 private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
-            VideoListTopAppBar({ }, { }, {}, {}, {})
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun AddEditTaskTopAppBarPreview() {
-    MJPlayerTheme {
-        Surface {
-            CommonTopAppBar(R.string.app_name) { }
-        }
-    }
-}
-
-@Preview
-@Composable
-private fun SearchTopAppBarPreview() {
-    MJPlayerTheme {
-        Surface {
-            SearchTopAppBar(
-                onSearchTextChange = {},
-                onBack = {},
-            )
+            Column() {
+                VideoListTopAppBar(LAYOUT_TYPE_LIST, { }, { }, {}, {}, {})
+                CommonTopAppBar(R.string.app_name) { }
+                SearchTopAppBar(
+                    onSearchTextChange = {},
+                    onBack = {},
+                )
+                SelectText(text = "全部", isSelected = true)
+            }
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.wj.player.ui.pager.videolist
 
 import android.Manifest
-import android.graphics.Bitmap
 import android.os.Build
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -11,7 +10,6 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,6 +24,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -55,19 +54,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -78,21 +70,24 @@ import androidx.paging.LoadState
 import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.wj.player.R
+import com.wj.player.MJConstants
+import com.wj.player.data.entity.LAYOUT_TYPE_GRID
+import com.wj.player.data.entity.LAYOUT_TYPE_LIST
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.ui.theme.colors.ConstantsColors
 import com.wj.player.ui.theme.colors.LocalColorScheme
-import com.wj.player.ui.theme.size.LocalTypography
+import com.wj.player.ui.view.IconTint
 import com.wj.player.ui.view.ImageVideo
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.header.VideoListTopAppBar
-import com.wj.player.ui.view.text.HighlightedText
-import com.wj.player.utils.permission.MultiplePermissionsRequest
+import com.wj.player.ui.view.noRippleClickable
+import com.wj.player.utils.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
 import com.wujia.toolkit.utils.HiLog
-import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 import kotlinx.coroutines.flow.Flow
+import kotlin.math.min
 
 @Composable
 fun VideoListScreen(
@@ -134,12 +129,13 @@ fun VideoListScreen(
         },
         topBar = {
             VideoListTopAppBar(
+                layoutType = uiState.layoutType,
                 onSearch = onNavigateToSearch,
                 onFilterList = {
-                    viewModel.setLayoutType(LayoutType.List)
+                    viewModel.setLayoutType(LAYOUT_TYPE_LIST)
                 },
                 onFilterGrid = {
-                    viewModel.setLayoutType(LayoutType.Grid)
+                    viewModel.setLayoutType(LAYOUT_TYPE_GRID)
                 },
                 onClickThemeSettings = onNavigateToThemeSettings,
                 onClickVideoSettings = onNavigateToVideoSettings,
@@ -187,7 +183,7 @@ fun VideoListScreen(
 fun VideoListContent(
     items: Flow<PagingData<VideoEntity>>,
     onVideoOnclick: (VideoEntity) -> Unit,
-    layoutType: LayoutType,
+    layoutType: Int,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
@@ -246,7 +242,7 @@ private fun GridColumn(
     groupedVideos: Map<String, List<VideoEntity>>,
     groupExpandStates: MutableMap<String, Boolean>,
     isLoading: Boolean,
-    layoutType: LayoutType,
+    layoutType: Int,
     onVideoOnclick: (VideoEntity) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -342,7 +338,7 @@ private fun GridColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                            .clickable { pagingVideos.retry() },
+                            .noRippleClickable{ pagingVideos.retry() },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -368,7 +364,7 @@ private fun VideoGroupItem(
     date: String,
     videos: List<VideoEntity>,
     isExpanded: Boolean,
-    layoutType: LayoutType,
+    layoutType: Int,
     onToggleExpand: () -> Unit,
     onVideoClick: (VideoEntity) -> Unit,
     modifier: Modifier = Modifier,
@@ -389,10 +385,10 @@ private fun VideoGroupItem(
             )
 
             IconButton(onClick = onToggleExpand) {
-                Icon(
-                    imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
+                IconTint(
+                    imageVector = if (isExpanded) MJConstants.Icon.ARROW_UP else MJConstants.Icon.ARROW_DOWN,
                     contentDescription = if (isExpanded) "收起" else "展开",
-                    tint = Color.Gray,
+                    tint = LocalColorScheme.current.textSecondary,
                 )
             }
         }
@@ -413,7 +409,7 @@ private fun VideoGroupItem(
             // 关键：添加内容大小动画，避免布局跳动
             modifier = Modifier.animateContentSize(animationSpec = tween(durationMillis = 300)),
         ) {
-            if (layoutType == LayoutType.Grid) {
+            if (layoutType == LAYOUT_TYPE_GRID) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier
@@ -487,14 +483,6 @@ private fun VideoGroupItem(
             }
         }
 
-        // 分组分隔线（保持原有）
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 4.dp, horizontal = 16.dp)
-                .height(1.dp)
-                .background(Color.LightGray.copy(alpha = 0.5f)),
-        )
     }
 
 }
@@ -513,7 +501,7 @@ private fun VideoThumbnailGroupItem(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .fillMaxWidth()
-            .clickable { onVideoClick(video) }, // 处理点击事件
+            .noRippleClickable { onVideoClick(video) }, // 处理点击事件
     ) {
         ImageVideo(
             videoTitle = video.title,
@@ -524,7 +512,7 @@ private fun VideoThumbnailGroupItem(
 
         TextCaption(
             text = VideoTimeUtils.formatVideoDuration(video.duration),
-            color = LocalColorScheme.current.white,
+            color = ConstantsColors.white,
             modifier = Modifier
                 .padding(4.dp)
                 .clip(RoundedCornerShape(4.dp))
@@ -549,7 +537,7 @@ private fun VideoThumbnailListItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onVideoClick(video) },
+            .noRippleClickable { onVideoClick(video) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {

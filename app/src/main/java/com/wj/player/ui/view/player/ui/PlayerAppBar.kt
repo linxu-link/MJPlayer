@@ -31,6 +31,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wj.player.MJConstants
+import com.wj.player.ui.view.IconTint
+import com.wj.player.ui.view.TextCaption
+import com.wj.player.ui.view.noRippleClickable
 import org.w3c.dom.Text
 
 /**
@@ -78,12 +82,9 @@ fun TopPlayerActionBar(
                 }
 
                 // 标题文本
-                Text(
+                TextCaption(
                     text = title,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
                     color = contentColor,
-                    maxLines = 1,
                 )
             }
 
@@ -95,7 +96,7 @@ fun TopPlayerActionBar(
                 Row(
                     modifier = Modifier
                         .padding(horizontal = 16.dp)
-                        .clickable {
+                        .noRippleClickable {
                             onRightIconClick()
                         },
                     verticalAlignment = Alignment.CenterVertically,
@@ -122,14 +123,14 @@ fun TopPlayerActionBar(
 
 
 // 使用示例
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun ActionBarDemo() {
     TopPlayerActionBar(
         title = "视频播放",
         onBackClick = { /* 返回上一页逻辑 */ },
         contentColor = Color.White,
-        leftIcon = { Icon(Icons.Filled.ArrowBack, contentDescription = "返回") },
-        rightIcon = { Icon(Icons.Filled.Speed, contentDescription = "速度") },
+        leftIcon = { IconTint(MJConstants.Icon.ARROW_BACK, contentDescription = "返回") },
+        rightIcon = { IconTint(MJConstants.Icon.PLAYER_SPEED, contentDescription = "速度") },
     )
 }

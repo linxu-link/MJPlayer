@@ -5,6 +5,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,10 +32,10 @@ import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 
 @Composable
 fun TextTitle(
+    modifier: Modifier = Modifier,
     text: String,
     color: Color = LocalColorScheme.current.textPrimary,
     textAlign: TextAlign = TextAlign.Start,
-    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,
@@ -49,17 +51,15 @@ fun TextTitle(
 
 @Composable
 fun TextBody(
+    modifier: Modifier = Modifier,
     text: String,
     color: Color = LocalColorScheme.current.textPrimary,
     textAlign: TextAlign = TextAlign.Start,
-    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,
         text = text,
         textAlign = textAlign,
-        softWrap = false,
-        maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = LocalTypography.current.body,
         color = color,
@@ -68,10 +68,10 @@ fun TextBody(
 
 @Composable
 fun TextCaption(
+    modifier: Modifier = Modifier,
     text: String,
     color: Color = LocalColorScheme.current.textSecondary,
     textAlign: TextAlign = TextAlign.Start,
-    modifier: Modifier = Modifier,
 ) {
     Text(
         modifier = modifier,
@@ -81,6 +81,25 @@ fun TextCaption(
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
         style = LocalTypography.current.caption,
+        color = color,
+    )
+}
+
+@Composable
+fun TextSmall(
+    modifier: Modifier = Modifier,
+    text: String,
+    color: Color = LocalColorScheme.current.textSecondary,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        textAlign = textAlign,
+        softWrap = false,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = LocalTypography.current.small,
         color = color,
     )
 }
@@ -120,12 +139,28 @@ fun ImageVideo(
     )
 }
 
+@Composable
+fun IconTint(
+    imageVector: ImageVector,
+    contentDescription: String? = null,
+    modifier: Modifier = Modifier,
+    tint: Color = LocalColorScheme.current.textPrimary,
+) {
+    Icon(
+        imageVector = imageVector,
+        contentDescription = contentDescription,
+        modifier = modifier,
+        tint = tint,
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun Demo() {
     Column() {
-        TextTitle("这是一个标题")
-        TextBody("这是一个正文")
-        TextCaption("这是一个caption")
+        TextTitle(text = "这是一个标题")
+        TextBody(text = "这是一个正文")
+        TextCaption(text = "这是一个caption")
+        TextSmall(text = "这是一个small")
     }
 }

@@ -14,8 +14,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.wj.player.ui.pager.player.PlayerScreen
 import com.wj.player.ui.pager.search.SearchScreen
-import com.wj.player.ui.pager.settings.ThemeSettingsScreen
-import com.wj.player.ui.pager.settings.VideoSettingsScreen
+import com.wj.player.ui.pager.settings.theme.ThemeScreen
+import com.wj.player.ui.pager.settings.video.VideoScreen
 import com.wj.player.ui.pager.videolist.VideoListScreen
 import kotlinx.coroutines.CoroutineScope
 
@@ -82,14 +82,14 @@ fun MJNaviGraph(
         }
 
         composable(MJPlayerDestinations.THEME_SETTINGS_ROUTE) {
-            ThemeSettingsScreen(
+            ThemeScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
             )
         }
 
         composable(MJPlayerDestinations.VIDEO_SETTINGS_ROUTE) {
-            VideoSettingsScreen(
+            VideoScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
             )

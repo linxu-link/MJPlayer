@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import com.wj.player.ui.view.noRippleClickable
 
 /**
  * 自定义 Popup 组件
@@ -110,7 +111,7 @@ fun HiPopup(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Black.copy(alpha = 0.0f * alpha))
-                        .clickable {
+                        .noRippleClickable {
                             transitionState.targetState = false
                         },
                 )
@@ -160,7 +161,7 @@ fun PopupExample() {
                 .align(Alignment.Center)
                 .size(100.dp)
                 .background(MaterialTheme.colorScheme.primary)
-                .clickable { showPopup = true }
+                .noRippleClickable { showPopup = true }
                 .onGloballyPositioned { coordinates ->
                     // 获取组件在窗口中的位置
                     val position = coordinates.positionInWindow()

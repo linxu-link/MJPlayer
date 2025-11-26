@@ -65,6 +65,7 @@ import com.wj.player.data.entity.Video
 import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.ui.view.ImageVideo
 import com.wj.player.ui.view.header.SearchTopAppBar
+import com.wj.player.ui.view.noRippleClickable
 import com.wj.player.ui.view.text.HighlightedText
 import com.wj.player.utils.VideoTimeUtils
 import java.text.SimpleDateFormat
@@ -173,7 +174,7 @@ private fun SearchHistoryList(
                     text = "清空全部",
                     fontSize = 13.sp,
                     color = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.clickable { onClearAllClick() },
+                    modifier = Modifier.noRippleClickable { onClearAllClick() },
                 )
             }
         }
@@ -252,7 +253,7 @@ private fun VideoThumbnailListItem(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .clickable { onVideoClick(video) },
+            .noRippleClickable { onVideoClick(video) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -321,7 +322,7 @@ private fun SearchHistoryItem(
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.LightGray, RoundedCornerShape(12.dp))
-            .clickable { onItemClick() },
+            .noRippleClickable { onItemClick() },
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
