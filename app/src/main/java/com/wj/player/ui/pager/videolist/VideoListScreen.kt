@@ -11,7 +11,6 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,11 +19,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,8 +29,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -71,11 +66,9 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wj.player.MJConstants
-import com.wj.player.data.entity.LAYOUT_TYPE_GRID
-import com.wj.player.data.entity.LAYOUT_TYPE_LIST
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
-import com.wj.player.ui.theme.colors.ConstantsColors
+import com.wj.player.ui.theme.colors.Colors
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.view.IconTint
 import com.wj.player.ui.view.ImageVideo
@@ -87,7 +80,6 @@ import com.wj.player.utils.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
 import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.flow.Flow
-import kotlin.math.min
 
 @Composable
 fun VideoListScreen(
@@ -132,10 +124,10 @@ fun VideoListScreen(
                 layoutType = uiState.layoutType,
                 onSearch = onNavigateToSearch,
                 onFilterList = {
-                    viewModel.setLayoutType(LAYOUT_TYPE_LIST)
+                    viewModel.setLayoutType(LayoutType.LIST)
                 },
                 onFilterGrid = {
-                    viewModel.setLayoutType(LAYOUT_TYPE_GRID)
+                    viewModel.setLayoutType(LayoutType.GRID)
                 },
                 onClickThemeSettings = onNavigateToThemeSettings,
                 onClickVideoSettings = onNavigateToVideoSettings,
@@ -145,11 +137,12 @@ fun VideoListScreen(
             FloatingActionButton(
                 onClick = onFloatingBarClick,
                 shape = CircleShape,
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = LocalColorScheme.current.accent,
             ) {
                 Icon(
-                    imageVector = Icons.Default.PlayArrow,
+                    imageVector = MJConstants.Icon.ARROW_PLAY,
                     contentDescription = "继续播放",
+                    tint = LocalColorScheme.current.accentInverse,
                 )
             }
         },
@@ -183,7 +176,7 @@ fun VideoListScreen(
 fun VideoListContent(
     items: Flow<PagingData<VideoEntity>>,
     onVideoOnclick: (VideoEntity) -> Unit,
-    layoutType: Int,
+    layoutType: LayoutType,
     isLoading: Boolean,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier,
@@ -230,8 +223,8 @@ fun VideoListContent(
             refreshing = isLoading || pagingVideos.loadState.refresh is LoadState.Loading,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter),
-            contentColor = MaterialTheme.colorScheme.primary,
-            backgroundColor = MaterialTheme.colorScheme.surface,
+            contentColor = LocalColorScheme.current.accent,
+            backgroundColor = LocalColorScheme.current.surface,
         )
     }
 }
@@ -242,7 +235,7 @@ private fun GridColumn(
     groupedVideos: Map<String, List<VideoEntity>>,
     groupExpandStates: MutableMap<String, Boolean>,
     isLoading: Boolean,
-    layoutType: Int,
+    layoutType: LayoutType,
     onVideoOnclick: (VideoEntity) -> Unit,
 ) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -338,7 +331,7 @@ private fun GridColumn(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
-                            .noRippleClickable{ pagingVideos.retry() },
+                            .noRippleClickable { pagingVideos.retry() },
                         contentAlignment = Alignment.Center,
                     ) {
                         Text(
@@ -364,7 +357,7 @@ private fun VideoGroupItem(
     date: String,
     videos: List<VideoEntity>,
     isExpanded: Boolean,
-    layoutType: Int,
+    layoutType: LayoutType,
     onToggleExpand: () -> Unit,
     onVideoClick: (VideoEntity) -> Unit,
     modifier: Modifier = Modifier,
@@ -409,7 +402,7 @@ private fun VideoGroupItem(
             // 关键：添加内容大小动画，避免布局跳动
             modifier = Modifier.animateContentSize(animationSpec = tween(durationMillis = 300)),
         ) {
-            if (layoutType == LAYOUT_TYPE_GRID) {
+            if (layoutType == LayoutType.GRID) {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(4),
                     modifier = Modifier
@@ -512,7 +505,7 @@ private fun VideoThumbnailGroupItem(
 
         TextCaption(
             text = VideoTimeUtils.formatVideoDuration(video.duration),
-            color = ConstantsColors.white,
+            color = Colors.white,
             modifier = Modifier
                 .padding(4.dp)
                 .clip(RoundedCornerShape(4.dp))

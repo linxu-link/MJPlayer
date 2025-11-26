@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
@@ -57,8 +56,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wj.player.MJConstants
 import com.wj.player.R
-import com.wj.player.data.entity.LAYOUT_TYPE_GRID
-import com.wj.player.data.entity.LAYOUT_TYPE_LIST
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.ui.theme.MJPlayerTheme
 import com.wj.player.ui.theme.colors.LocalColorScheme
@@ -67,7 +64,7 @@ import com.wj.player.ui.view.TextTitle
 
 @Composable
 fun VideoListTopAppBar(
-    layoutType: Int,
+    layoutType: LayoutType,
     onSearch: () -> Unit,
     onFilterList: () -> Unit,
     onFilterGrid: () -> Unit,
@@ -82,7 +79,7 @@ fun VideoListTopAppBar(
         navigationIcon = {
             IconButton(onClick = onSearch) {
                 Icon(
-                    imageVector = Icons.Filled.Search,
+                    imageVector = MJConstants.Icon.SEARCH,
                     contentDescription = stringResource(id = R.string.search),
                     tint = LocalColorScheme.current.textPrimary,
                 )
@@ -187,7 +184,7 @@ fun SearchTopAppBar(
                             modifier = Modifier.fillMaxHeight(), // 确保 Row 填满高度
                         ) {
                             Icon(
-                                imageVector = Icons.Default.Search,
+                                imageVector = MJConstants.Icon.SEARCH,
                                 contentDescription = "搜索",
                                 tint = LocalColorScheme.current.textSecondary,
                                 modifier = Modifier.size(20.dp), // 统一图标尺寸
@@ -224,14 +221,14 @@ fun SearchTopAppBar(
 
 @Composable
 private fun FilterMenu(
-    layoutType: Int,
+    layoutType: LayoutType,
     onFilterList: () -> Unit,
     onFilterGrid: () -> Unit,
 ) {
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(
-                painter = painterResource(id = R.drawable.ic_filter_list),
+                imageVector = MJConstants.Icon.FILTER,
                 contentDescription = stringResource(id = R.string.menu_filter),
                 tint = LocalColorScheme.current.textPrimary,
             )
@@ -245,7 +242,7 @@ private fun FilterMenu(
             text = {
                 SelectText(
                     text = stringResource(id = R.string.menu_filter_list),
-                    isSelected = layoutType == LAYOUT_TYPE_LIST,
+                    isSelected = layoutType == LayoutType.LIST,
                 )
             },
         )
@@ -257,7 +254,7 @@ private fun FilterMenu(
             text = {
                 SelectText(
                     text = stringResource(id = R.string.menu_filter_pic),
-                    isSelected = layoutType == LAYOUT_TYPE_GRID,
+                    isSelected = layoutType == LayoutType.GRID,
                 )
             },
         )
@@ -272,7 +269,7 @@ private fun SettingsMenu(
     TopAppBarDropdownMenu(
         iconContent = {
             Icon(
-                imageVector = Icons.Filled.MoreVert,
+                imageVector = MJConstants.Icon.SETTING,
                 contentDescription = stringResource(id = R.string.menu_settings_title),
                 tint = LocalColorScheme.current.textPrimary,
             )
@@ -286,7 +283,7 @@ private fun SettingsMenu(
             text = {
                 TextCaption(
                     text = stringResource(id = R.string.menu_settings_theme),
-                    color = LocalColorScheme.current.textPrimary,
+                    color = LocalColorScheme.current.textPrimaryInverse,
                 )
             },
         )
@@ -298,7 +295,7 @@ private fun SettingsMenu(
             text = {
                 TextCaption(
                     text = stringResource(id = R.string.menu_settings_video),
-                    color = LocalColorScheme.current.textPrimary,
+                    color = LocalColorScheme.current.textPrimaryInverse,
                 )
             },
         )
@@ -342,14 +339,14 @@ private fun SelectText(text: String, isSelected: Boolean) {
     ) {
         TextCaption(
             text = text,
-            color = if (isSelected) LocalColorScheme.current.accent else LocalColorScheme.current.textPrimary,
+            color = if (isSelected) LocalColorScheme.current.accent else LocalColorScheme.current.textPrimaryInverse,
         )
 
         Spacer(modifier = Modifier.width(25.dp))
 
         if (isSelected) {
             Icon(
-                imageVector = Icons.Default.Check,
+                imageVector = MJConstants.Icon.CHECK,
                 contentDescription = null,
                 tint = LocalColorScheme.current.accent,
                 modifier = Modifier.size(18.dp),
@@ -364,7 +361,7 @@ private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
             Column() {
-                VideoListTopAppBar(LAYOUT_TYPE_LIST, { }, { }, {}, {}, {})
+                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
                 CommonTopAppBar(R.string.app_name) { }
                 SearchTopAppBar(
                     onSearchTextChange = {},

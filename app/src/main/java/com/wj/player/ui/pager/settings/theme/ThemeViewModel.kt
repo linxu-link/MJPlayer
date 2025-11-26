@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.wj.player.MJConstants
 import com.wj.player.arch.ArchViewModel
 import com.wj.player.data.entity.ThemeEntity
+import com.wj.player.ui.theme.ThemeType
 import com.wj.player.utils.WhileUiSubscribed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,7 +61,7 @@ class SettingViewModel @Inject constructor() : ArchViewModel() {
         }
     }
 
-    fun selectTheme(themeType: Int) {
+    fun selectTheme(themeType: ThemeType) {
         _otherThemes.value = _otherThemes.value.map {
             it.copy(isSelected = it.themeType == themeType)
         }

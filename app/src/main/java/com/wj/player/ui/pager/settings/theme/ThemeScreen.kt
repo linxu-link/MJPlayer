@@ -2,7 +2,6 @@ package com.wj.player.ui.pager.settings.theme
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,15 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,11 +22,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.wj.player.R
@@ -41,11 +32,8 @@ import com.wj.player.data.entity.ThemeEntity
 import com.wj.player.data.entity.getColor
 import com.wj.player.data.entity.getGradientColors
 import com.wj.player.data.entity.isGradient
-import com.wj.player.ui.theme.colors.ADAPTIVE_THEME
-import com.wj.player.ui.theme.colors.ConstantsColors
-import com.wj.player.ui.theme.colors.DARK_THEME
-import com.wj.player.ui.theme.colors.LIGHT_THEME
-import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.theme.ThemeType
+import com.wj.player.ui.theme.colors.Colors
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextSmall
@@ -170,9 +158,9 @@ private fun TopThemeList(
                     Image(
                         modifier = Modifier.matchParentSize().run {
                             when (theme.themeType) {
-                                ADAPTIVE_THEME -> Modifier.background(ConstantsColors.adaptiveThemeColor)
-                                LIGHT_THEME -> Modifier.background(ConstantsColors.lightThemeColor)
-                                DARK_THEME -> Modifier.background(ConstantsColors.darkThemeColor)
+                                ThemeType.ADAPTIVE -> Modifier.background(Colors.adaptiveThemeBg)
+                                ThemeType.LIGHT -> Modifier.background(Colors.lightThemeBg)
+                                ThemeType.DARK -> Modifier.background(Colors.darkThemeBg)
                                 else -> Modifier
                             }
                         },
@@ -185,10 +173,10 @@ private fun TopThemeList(
                     TextBody(
                         text = theme.name,
                         color = when (theme.themeType) {
-                            ADAPTIVE_THEME -> ConstantsColors.black
-                            LIGHT_THEME -> ConstantsColors.black
-                            DARK_THEME -> ConstantsColors.white
-                            else -> ConstantsColors.white
+                            ThemeType.ADAPTIVE -> Colors.black
+                            ThemeType.LIGHT -> Colors.black
+                            ThemeType.DARK -> Colors.white
+                            else -> Colors.white
                         },
                         modifier = Modifier.padding(horizontal = 8.dp),
                     )
@@ -198,9 +186,9 @@ private fun TopThemeList(
                     TextSmall(
                         text = "Using",
                         textAlign = TextAlign.Center,
-                        color = ConstantsColors.white,
+                        color = Colors.white,
                         modifier = Modifier
-                            .background(color = ConstantsColors.themeMark, shape = RoundedCornerShape(4.dp))
+                            .background(color = Colors.themeMark, shape = RoundedCornerShape(4.dp))
                             .align(Alignment.TopEnd)
                             .padding(horizontal = 4.dp, vertical = 2.dp),
                     )
@@ -299,9 +287,9 @@ private fun ClassicThemeItem(
             TextSmall(
                 text = "Using",
                 textAlign = TextAlign.Center,
-                color = ConstantsColors.white,
+                color = Colors.white,
                 modifier = Modifier
-                    .background(color = ConstantsColors.themeMark, shape = RoundedCornerShape(4.dp))
+                    .background(color = Colors.themeMark, shape = RoundedCornerShape(4.dp))
                     .align(Alignment.TopEnd)
                     .padding(horizontal = 4.dp, vertical = 2.dp),
             )
@@ -389,11 +377,11 @@ private fun TopThemeListPreview() {
             ThemeEntity(
                 "Adaptive",
                 R.drawable.theme_list_dark_mask,
-                themeType = ADAPTIVE_THEME,
+                themeType = ThemeType.ADAPTIVE,
                 isSelected = true,
             ),
-            ThemeEntity("Light Theme", R.drawable.theme_list_dark_mask, themeType = LIGHT_THEME),
-            ThemeEntity("Dark Theme", R.drawable.theme_list_dark_mask, themeType = DARK_THEME),
+            ThemeEntity("Light Theme", R.drawable.theme_list_dark_mask, themeType = ThemeType.LIGHT),
+            ThemeEntity("Dark Theme", R.drawable.theme_list_dark_mask, themeType = ThemeType.DARK),
         ),
         onThemeSelected = {},
     )

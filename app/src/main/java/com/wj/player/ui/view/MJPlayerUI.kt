@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wj.player.R
 import com.wj.player.ui.theme.colors.LocalColorScheme
-import com.wj.player.ui.theme.size.LocalTypography
+import com.wj.player.ui.theme.textstyle.LocalTypography
 import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 
 @Composable
