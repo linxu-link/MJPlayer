@@ -64,10 +64,6 @@ import com.wj.player.ui.view.TextTitle
 
 @Composable
 fun VideoListTopAppBar(
-    layoutType: LayoutType,
-    onSearch: () -> Unit,
-    onFilterList: () -> Unit,
-    onFilterGrid: () -> Unit,
     onClickThemeSettings: () -> Unit,
     onClickVideoSettings: () -> Unit,
 ) {
@@ -77,7 +73,7 @@ fun VideoListTopAppBar(
         ),
         title = {},
         navigationIcon = {
-            IconButton(onClick = onSearch) {
+            IconButton(onClick = { }) {
                 Icon(
                     imageVector = MJConstants.Icon.SEARCH,
                     contentDescription = stringResource(id = R.string.search),
@@ -86,11 +82,6 @@ fun VideoListTopAppBar(
             }
         },
         actions = {
-            FilterMenu(
-                layoutType,
-                onFilterList,
-                onFilterGrid,
-            )
             SettingsMenu(
                 onClickThemeSettings = onClickThemeSettings,
                 onClickVideoSettings = onClickVideoSettings,
@@ -361,13 +352,13 @@ private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
             Column() {
-//                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
+                VideoListTopAppBar({},{})
                 CommonTopAppBar(R.string.app_name) { }
-//                SearchTopAppBar(
-//                    onSearchTextChange = {},
-//                    onBack = {},
-//                )
-//                SelectText(text = "全部", isSelected = true)
+                SearchTopAppBar(
+                    onSearchTextChange = {},
+                    onBack = {},
+                )
+                SelectText(text = "全部", isSelected = true)
             }
         }
     }
