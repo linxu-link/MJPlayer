@@ -9,15 +9,12 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Speed
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.entity.ThemeEntity
 import com.wj.player.ui.theme.ThemeType
 import com.wujia.toolkit.HiAppGlobal
-import com.wujia.toolkit.utils.HiLog
 import com.wujia.toolkit.utils.HiSp
-import org.junit.runner.manipulation.Filter
 
 interface MJConstants {
 
@@ -43,17 +40,14 @@ interface MJConstants {
         val androidThemes = listOf(
             ThemeEntity(
                 name = HiAppGlobal.getApplication().getString(R.string.theme_adaptive),
-                iconRes = R.drawable.theme_list_system_mask,
                 themeType = ThemeType.ADAPTIVE,
             ),
             ThemeEntity(
                 name = HiAppGlobal.getApplication().getString(R.string.theme_light),
-                iconRes = R.drawable.theme_list_light_mask,
                 themeType = ThemeType.LIGHT,
             ),
             ThemeEntity(
                 name = HiAppGlobal.getApplication().getString(R.string.theme_dark),
-                iconRes = R.drawable.theme_list_dark_mask,
                 themeType = ThemeType.DARK,
             ),
         )

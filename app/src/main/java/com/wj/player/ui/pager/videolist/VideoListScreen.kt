@@ -28,8 +28,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -80,6 +78,8 @@ import com.wj.player.utils.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
 import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.flow.Flow
+
+const val VIDEO_ROW_COUNT = 3
 
 @Composable
 fun VideoListScreen(
@@ -404,7 +404,7 @@ private fun VideoGroupItem(
         ) {
             if (layoutType == LayoutType.GRID) {
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
+                    columns = GridCells.Fixed(VIDEO_ROW_COUNT),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
@@ -561,7 +561,7 @@ private fun VideoThumbnailListItem(
 @Composable
 private fun calculateGridMaxHeight(rowCount: Int, itemAspectRatio: Float): Dp {
     val screenWidth = LocalConfiguration.current.screenWidthDp.dp
-    val columnCount = 4 // 与网格列数一致
+    val columnCount = VIDEO_ROW_COUNT // 与网格列数一致
     val horizontalPadding = 16.dp * 2 // 左右各16dp padding
     val columnSpacing = 8.dp * (columnCount - 1) // 列间距（4列3个间距）
 

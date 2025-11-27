@@ -3,12 +3,16 @@ package com.wj.player.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import com.wj.player.ui.theme.colors.DarkColorScheme
-import com.wj.player.ui.theme.colors.LightColorScheme
+import com.wj.player.ui.theme.colors.darkColorScheme
+import com.wj.player.ui.theme.colors.lightColorScheme
 import com.wj.player.ui.theme.colors.LocalColorScheme
-import com.wj.player.ui.theme.colors.themeArray
+import com.wj.player.ui.theme.colors.themeColorArray
 import com.wj.player.ui.theme.dimens.LocalAppDimensions
 import com.wj.player.ui.theme.dimens.rememberAppDimensions
+import com.wj.player.ui.theme.resource.LocalImageScheme
+import com.wj.player.ui.theme.resource.darkImageScheme
+import com.wj.player.ui.theme.resource.lightImageScheme
+import com.wj.player.ui.theme.resource.themeImageArray
 import com.wj.player.ui.theme.textstyle.LocalTypography
 
 enum class ThemeType {
@@ -27,17 +31,28 @@ fun MJPlayerTheme(
 
     val colorScheme = if (ThemeType.ADAPTIVE == themeType) {
         if (isSystemInDarkTheme()) {
-            DarkColorScheme
+            darkColorScheme
         } else {
-            LightColorScheme
+            lightColorScheme
         }
     } else {
-        themeArray[themeType] ?: LightColorScheme
+        themeColorArray[themeType] ?: lightColorScheme
+    }
+
+    val imageScheme = if (ThemeType.ADAPTIVE == themeType) {
+        if (isSystemInDarkTheme()) {
+            darkImageScheme
+        } else {
+            lightImageScheme
+        }
+    } else {
+        themeImageArray[themeType] ?: lightImageScheme
     }
 
     CompositionLocalProvider(
         LocalAppDimensions provides dimensions,
         LocalColorScheme provides colorScheme,
+        LocalImageScheme provides imageScheme,
         LocalTypography provides LocalTypography.current,
         content = content,
     )

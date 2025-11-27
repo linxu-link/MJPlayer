@@ -30,11 +30,10 @@ object Colors {
     val theme14 = Color(0xFFFF518C)
     val theme15 = Color(0xFFE94491)
     val theme16 = Color(0xFFDEE3E6)
-
 }
 
 // 自定义颜色配置类
-data class MJPlayerColorScheme(
+data class ColorScheme(
     val theme: Color,         // 主题色
     val background: Color,    // 页面背景色
     val surface: Color,       // 卡片/组件背景色
@@ -48,7 +47,7 @@ data class MJPlayerColorScheme(
 )
 
 // 黑色主题配置
-val DarkColorScheme = MJPlayerColorScheme(
+val darkColorScheme = ColorScheme(
     theme = Colors.dark,
     background = Colors.dark,
     surface = Colors.grey,
@@ -62,7 +61,7 @@ val DarkColorScheme = MJPlayerColorScheme(
 )
 
 // 白色主题配置
-val LightColorScheme = MJPlayerColorScheme(
+val lightColorScheme = ColorScheme(
     theme = Colors.light,
     background = Colors.light,
     surface = Colors.light,
@@ -75,7 +74,7 @@ val LightColorScheme = MJPlayerColorScheme(
     border = Color(0xFFE0E0E0),
 )
 
-val Theme2ColorScheme = MJPlayerColorScheme(
+val theme2ColorScheme = ColorScheme(
     theme = Colors.theme2,
     background = Colors.light,
     surface = Colors.light,
@@ -88,7 +87,7 @@ val Theme2ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme3ColorScheme = MJPlayerColorScheme(
+val theme3ColorScheme = ColorScheme(
     theme = Colors.theme3,
     background = Colors.light,
     surface = Colors.light,
@@ -101,7 +100,7 @@ val Theme3ColorScheme = MJPlayerColorScheme(
     border = Color(0xFF333333),
 )
 
-val Theme4ColorScheme = MJPlayerColorScheme(
+val theme4ColorScheme = ColorScheme(
     theme = Colors.theme4,
     background = Colors.light,
     surface = Colors.light,
@@ -114,7 +113,7 @@ val Theme4ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme5ColorScheme = MJPlayerColorScheme(
+val theme5ColorScheme = ColorScheme(
     theme = Colors.theme5,
     background = Colors.light,
     surface = Colors.light,
@@ -127,7 +126,7 @@ val Theme5ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme6ColorScheme = MJPlayerColorScheme(
+val theme6ColorScheme = ColorScheme(
     theme = Colors.theme6,
     background = Colors.light,
     surface = Colors.light,
@@ -140,7 +139,7 @@ val Theme6ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme7ColorScheme = MJPlayerColorScheme(
+val theme7ColorScheme = ColorScheme(
     theme = Colors.theme7,
     background = Colors.light,
     surface = Colors.light,
@@ -153,7 +152,7 @@ val Theme7ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme8ColorScheme = MJPlayerColorScheme(
+val theme8ColorScheme = ColorScheme(
     theme = Colors.theme8,
     background = Colors.light,
     surface = Colors.light,
@@ -166,7 +165,7 @@ val Theme8ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme9ColorScheme = MJPlayerColorScheme(
+val theme9ColorScheme = ColorScheme(
     theme = Colors.theme9,
     background = Colors.light,
     surface = Colors.light,
@@ -179,7 +178,7 @@ val Theme9ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme10ColorScheme = MJPlayerColorScheme(
+val theme10ColorScheme = ColorScheme(
     theme = Colors.theme10,
     background = Colors.light,
     surface = Colors.light,
@@ -192,7 +191,7 @@ val Theme10ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme11ColorScheme = MJPlayerColorScheme(
+val theme11ColorScheme = ColorScheme(
     theme = Colors.theme11,
     background = Colors.light,
     surface = Colors.light,
@@ -205,7 +204,7 @@ val Theme11ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme12ColorScheme = MJPlayerColorScheme(
+val theme12ColorScheme = ColorScheme(
     theme = Colors.theme12,
     background = Colors.light,
     surface = Colors.light,
@@ -218,7 +217,7 @@ val Theme12ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme13ColorScheme = MJPlayerColorScheme(
+val theme13ColorScheme = ColorScheme(
     theme = Colors.theme13,
     background = Colors.light,
     surface = Colors.light,
@@ -231,7 +230,7 @@ val Theme13ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme14ColorScheme = MJPlayerColorScheme(
+val theme14ColorScheme = ColorScheme(
     theme = Colors.theme14,
     background = Colors.light,
     surface = Colors.light,
@@ -244,7 +243,7 @@ val Theme14ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme15ColorScheme = MJPlayerColorScheme(
+val theme15ColorScheme = ColorScheme(
     theme = Colors.theme15,
     background = Colors.light,
     surface = Colors.light,
@@ -257,7 +256,7 @@ val Theme15ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme16ColorScheme = MJPlayerColorScheme(
+val theme16ColorScheme = ColorScheme(
     theme = Colors.theme16,
     background = Colors.light,
     surface = Colors.light,
@@ -270,7 +269,7 @@ val Theme16ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme17ColorScheme = MJPlayerColorScheme(
+val theme17ColorScheme = ColorScheme(
     theme = Colors.theme2,
     background = Colors.dark,
     surface = Colors.grey,
@@ -283,7 +282,7 @@ val Theme17ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme18ColorScheme = MJPlayerColorScheme(
+val theme18ColorScheme = ColorScheme(
     theme = Colors.theme3,
     background = Colors.dark,
     surface = Colors.grey,
@@ -296,7 +295,7 @@ val Theme18ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme19ColorScheme = MJPlayerColorScheme(
+val theme19ColorScheme = ColorScheme(
     theme = Colors.theme4,
     background = Colors.dark,
     surface = Colors.grey,
@@ -309,7 +308,7 @@ val Theme19ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme20ColorScheme = MJPlayerColorScheme(
+val theme20ColorScheme = ColorScheme(
     theme = Colors.theme5,
     background = Colors.dark,
     surface = Colors.grey,
@@ -322,7 +321,7 @@ val Theme20ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme21ColorScheme = MJPlayerColorScheme(
+val theme21ColorScheme = ColorScheme(
     theme = Colors.theme6,
     background = Colors.dark,
     surface = Colors.grey,
@@ -335,7 +334,7 @@ val Theme21ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme22ColorScheme = MJPlayerColorScheme(
+val theme22ColorScheme = ColorScheme(
     theme = Colors.theme7,
     background = Colors.dark,
     surface = Colors.grey,
@@ -348,7 +347,7 @@ val Theme22ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme23ColorScheme = MJPlayerColorScheme(
+val theme23ColorScheme = ColorScheme(
     theme = Colors.theme8,
     background = Colors.dark,
     surface = Colors.grey,
@@ -361,7 +360,7 @@ val Theme23ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme24ColorScheme = MJPlayerColorScheme(
+val theme24ColorScheme = ColorScheme(
     theme = Colors.theme9,
     background = Colors.dark,
     surface = Colors.grey,
@@ -374,7 +373,7 @@ val Theme24ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val Theme25ColorScheme = MJPlayerColorScheme(
+val theme25ColorScheme = ColorScheme(
     theme = Colors.theme10,
     background = Colors.dark,
     surface = Colors.grey,
@@ -387,37 +386,37 @@ val Theme25ColorScheme = MJPlayerColorScheme(
     border = Color(0xFFBDC3C7),
 )
 
-val themeArray = mapOf(
-    ThemeType.DARK to DarkColorScheme,
-    ThemeType.LIGHT to LightColorScheme,
-    ThemeType.THEME_2 to Theme2ColorScheme,
-    ThemeType.THEME_3 to Theme3ColorScheme,
-    ThemeType.THEME_4 to Theme4ColorScheme,
-    ThemeType.THEME_5 to Theme5ColorScheme,
-    ThemeType.THEME_6 to Theme6ColorScheme,
-    ThemeType.THEME_7 to Theme7ColorScheme,
-    ThemeType.THEME_8 to Theme8ColorScheme,
-    ThemeType.THEME_9 to Theme9ColorScheme,
-    ThemeType.THEME_10 to Theme10ColorScheme,
-    ThemeType.THEME_11 to Theme11ColorScheme,
-    ThemeType.THEME_12 to Theme12ColorScheme,
-    ThemeType.THEME_13 to Theme13ColorScheme,
-    ThemeType.THEME_14 to Theme14ColorScheme,
-    ThemeType.THEME_15 to Theme15ColorScheme,
-    ThemeType.THEME_16 to Theme16ColorScheme,
-    ThemeType.THEME_17 to Theme17ColorScheme,
-    ThemeType.THEME_18 to Theme18ColorScheme,
-    ThemeType.THEME_19 to Theme19ColorScheme,
-    ThemeType.THEME_20 to Theme20ColorScheme,
-    ThemeType.THEME_21 to Theme21ColorScheme,
-    ThemeType.THEME_22 to Theme22ColorScheme,
-    ThemeType.THEME_23 to Theme23ColorScheme,
-    ThemeType.THEME_24 to Theme24ColorScheme,
-    ThemeType.THEME_25 to Theme25ColorScheme,
+val themeColorArray = mapOf(
+    ThemeType.DARK to darkColorScheme,
+    ThemeType.LIGHT to lightColorScheme,
+    ThemeType.THEME_2 to theme2ColorScheme,
+    ThemeType.THEME_3 to theme3ColorScheme,
+    ThemeType.THEME_4 to theme4ColorScheme,
+    ThemeType.THEME_5 to theme5ColorScheme,
+    ThemeType.THEME_6 to theme6ColorScheme,
+    ThemeType.THEME_7 to theme7ColorScheme,
+    ThemeType.THEME_8 to theme8ColorScheme,
+    ThemeType.THEME_9 to theme9ColorScheme,
+    ThemeType.THEME_10 to theme10ColorScheme,
+    ThemeType.THEME_11 to theme11ColorScheme,
+    ThemeType.THEME_12 to theme12ColorScheme,
+    ThemeType.THEME_13 to theme13ColorScheme,
+    ThemeType.THEME_14 to theme14ColorScheme,
+    ThemeType.THEME_15 to theme15ColorScheme,
+    ThemeType.THEME_16 to theme16ColorScheme,
+    ThemeType.THEME_17 to theme17ColorScheme,
+    ThemeType.THEME_18 to theme18ColorScheme,
+    ThemeType.THEME_19 to theme19ColorScheme,
+    ThemeType.THEME_20 to theme20ColorScheme,
+    ThemeType.THEME_21 to theme21ColorScheme,
+    ThemeType.THEME_22 to theme22ColorScheme,
+    ThemeType.THEME_23 to theme23ColorScheme,
+    ThemeType.THEME_24 to theme24ColorScheme,
+    ThemeType.THEME_25 to theme25ColorScheme,
 )
 
 // 创建CompositionLocal实例，默认值为白色主题
-val LocalColorScheme = compositionLocalOf<MJPlayerColorScheme> {
+val LocalColorScheme = compositionLocalOf<ColorScheme> {
     // 默认颜色配置（白色主题）
-    LightColorScheme
+    lightColorScheme
 }

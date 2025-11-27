@@ -34,11 +34,13 @@ import com.wj.player.data.entity.getGradientColors
 import com.wj.player.data.entity.isGradient
 import com.wj.player.ui.theme.ThemeType
 import com.wj.player.ui.theme.colors.Colors
+import com.wj.player.ui.theme.resource.LocalImageScheme
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextSmall
 import com.wj.player.ui.view.header.CommonTopAppBar
 import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.utils.HiLog
 import kotlin.math.ceil
 
 
@@ -89,7 +91,7 @@ private fun ThemeContent(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(24.dp)
+        verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
         // 顶部主题切换栏
         item {
@@ -164,7 +166,12 @@ private fun TopThemeList(
                                 else -> Modifier
                             }
                         },
-                        painter = painterResource(theme.iconRes),
+                        painter = when (theme.themeType) {
+                            ThemeType.ADAPTIVE -> painterResource(LocalImageScheme.current.adaptiveThemeMask)
+                            ThemeType.LIGHT -> painterResource(LocalImageScheme.current.lightThemeMask)
+                            ThemeType.DARK -> painterResource(LocalImageScheme.current.darkThemeMask)
+                            else -> painterResource(LocalImageScheme.current.adaptiveThemeMask)
+                        },
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                     )
@@ -212,12 +219,12 @@ private fun ClassicThemeGrid(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         for (row in 0 until rows) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 for (col in 0 until columns) {
                     val index = row * columns + col
@@ -226,7 +233,7 @@ private fun ClassicThemeGrid(
                         ClassicThemeItem(
                             theme = theme,
                             onThemeSelected = onThemeSelected,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     } else {
                         // 空项填充
@@ -243,7 +250,7 @@ private fun ClassicThemeGrid(
 private fun ClassicThemeItem(
     theme: ThemeEntity,
     onThemeSelected: (ThemeEntity) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -279,7 +286,7 @@ private fun ClassicThemeItem(
                     .fillMaxSize()
                     .padding(2.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(theme.getColor())
+                    .background(theme.getColor()),
             )
         }
 
@@ -310,12 +317,12 @@ private fun OtherThemeGrid(
 
     Column(
         modifier = modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         for (row in 0 until rows) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 for (col in 0 until columns) {
                     val index = row * columns + col
@@ -324,7 +331,7 @@ private fun OtherThemeGrid(
                         OtherThemeCard(
                             theme = theme,
                             onThemeSelected = onThemeSelected,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier.weight(1f),
                         )
                     } else {
                         // 空项填充
@@ -341,7 +348,7 @@ private fun OtherThemeGrid(
 private fun OtherThemeCard(
     theme: ThemeEntity,
     onThemeSelected: (ThemeEntity) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         modifier = modifier
@@ -380,7 +387,11 @@ private fun TopThemeListPreview() {
                 themeType = ThemeType.ADAPTIVE,
                 isSelected = true,
             ),
-            ThemeEntity("Light Theme", R.drawable.theme_list_dark_mask, themeType = ThemeType.LIGHT),
+            ThemeEntity(
+                "Light Theme",
+                R.drawable.theme_list_dark_mask,
+                themeType = ThemeType.LIGHT,
+            ),
             ThemeEntity("Dark Theme", R.drawable.theme_list_dark_mask, themeType = ThemeType.DARK),
         ),
         onThemeSelected = {},

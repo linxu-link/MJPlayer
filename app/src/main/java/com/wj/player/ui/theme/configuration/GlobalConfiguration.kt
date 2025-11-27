@@ -9,3 +9,7 @@ val LocalOrientationController = compositionLocalOf<() -> Unit> {
 val LocalIsLandscape = compositionLocalOf<(() -> Boolean)> {
     error("LocalIsLandscape must be provided via CompositionLocalProvider")
 }
+
+val LocalSystemUiControl = compositionLocalOf<(Boolean) -> Unit> {
+    error("LocalSystemUiControl must be provided via CompositionLocalProvider")
+}

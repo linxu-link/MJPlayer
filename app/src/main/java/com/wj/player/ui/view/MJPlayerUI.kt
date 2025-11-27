@@ -127,9 +127,9 @@ fun ImageVideo(
 
     Image(
         painter = when {
-            isLoading -> painterResource(id = R.drawable.ic_loading)
+            isLoading -> painterResource(id = R.drawable.ic_loading_dark)
             else -> thumbnail?.let { BitmapPainter(it.asImageBitmap()) }
-                ?: painterResource(id = R.drawable.ic_loading)
+                ?: painterResource(id = R.drawable.ic_loading_dark)
         },
         contentDescription = videoTitle,
         modifier = modifier

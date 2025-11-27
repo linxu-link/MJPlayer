@@ -2,9 +2,14 @@ package com.wj.player.ui
 
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -14,16 +19,44 @@ import com.wj.player.ui.theme.MJPlayerTheme
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
+import com.wj.player.ui.theme.configuration.LocalSystemUiControl
+import com.wujia.toolkit.system.HiSystemBarsController
+import com.wujia.toolkit.system.HiSystemBarsController.Companion.IMMERSIVE_STICKY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ArchActivity() {
 
     private var currentTheme = MJConstants.Theme.getThemeType()
+    private lateinit var hiSystemUiControl: HiSystemBarsController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        hiSystemUiControl = HiSystemBarsController(this)
+        // 配置 Window，让状态栏透明且内容延伸到状态栏区域
+        window.apply {
+            setDecorFitsSystemWindows(false)
+            // 设置状态栏背景透明
+            statusBarColor = Color.TRANSPARENT
+            // 配置系统栏行为和外观
+            decorView.windowInsetsController?.apply {
+                // 系统栏行为：下拉状态栏时临时显示，滑动后自动隐藏（沉浸式常用）
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                // 配置状态栏图标颜色（明暗模式）
+                // Appearance.LIGHT_STATUS_BARS：深色图标（适合浅色背景）
+                // 0：浅色图标（适合深色背景）
+//                setSystemBarsAppearance(
+//                    WindowInsetsController.APPEARANCE_TRANSPARENT_CAPTION_BAR_BACKGROUND,
+//                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+//                )
+                // 配置导航栏
+                navigationBarColor = Color.TRANSPARENT
+                setSystemBarsAppearance(
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
+                )
+            }
+        }
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         MJConstants.Theme.addThemeListener { themeType ->
             currentTheme = themeType
             setContent {
@@ -31,11 +64,22 @@ class MainActivity : ArchActivity() {
                     CompositionLocalProvider(
                         LocalOrientationController provides ::toggleOrientation,
                         LocalIsLandscape provides ::isLandscape,
+                        LocalSystemUiControl provides{ show ->
+                            toggleFullScreen(show)
+                        },
                     ) {
                         MJNaviGraph(modifier = Modifier.background(LocalColorScheme.current.background))
                     }
                 }
             }
+        }
+    }
+
+    private fun toggleFullScreen(show: Boolean) {
+        if (show) {
+            hiSystemUiControl.hideBothBars(IMMERSIVE_STICKY)
+        } else {
+            hiSystemUiControl.showBothBars()
         }
     }
 

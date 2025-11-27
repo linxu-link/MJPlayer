@@ -9,6 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -24,6 +25,7 @@ import androidx.media3.common.util.UnstableApi
 import com.wj.player.data.entity.Video
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
+import com.wj.player.ui.theme.configuration.LocalSystemUiControl
 import com.wj.player.ui.view.player.ExoplayerControllerImpl
 import com.wj.player.ui.view.player.SampleVideoPlayer
 import com.wj.player.ui.view.player.ui.PlayerUiConfig
@@ -135,4 +137,5 @@ private fun VideoPlayerContent(
         },
         onRotateToggle = toggleOrientation,
     )
+
 }
