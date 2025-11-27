@@ -361,13 +361,13 @@ private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
             Column() {
-                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
+//                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
                 CommonTopAppBar(R.string.app_name) { }
-                SearchTopAppBar(
-                    onSearchTextChange = {},
-                    onBack = {},
-                )
-                SelectText(text = "全部", isSelected = true)
+//                SearchTopAppBar(
+//                    onSearchTextChange = {},
+//                    onBack = {},
+//                )
+//                SelectText(text = "全部", isSelected = true)
             }
         }
     }

@@ -40,6 +40,7 @@ val theme2ImageScheme = ImageScheme(
     lightThemeMask = Images.lightThemeMask,
     darkThemeMask = Images.blackThemeMask,
 )
+
 val theme3ImageScheme = ImageScheme(
     placeholder = Images.placeholderLight,
     adaptiveThemeMask = Images.adaptiveThemeMask,
@@ -208,7 +209,7 @@ val themeImageArray = mapOf(
     ThemeType.THEME_25 to theme25ImageScheme,
 )
 
-// 创建CompositionLocal实例，默认值为白色主题
+// 创建图标 CompositionLocal实例，默认值为白色主题
 val LocalImageScheme = compositionLocalOf<ImageScheme> {
     // 默认颜色配置（白色主题）
     lightImageScheme

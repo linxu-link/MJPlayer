@@ -101,6 +101,10 @@ interface MJConstants {
             listener(getThemeType())
         }
 
+        fun removeThemeListener(listener: (ThemeType) -> Unit) {
+            themeListeners.remove(listener)
+        }
+
         fun getLayoutType() = HiSp.get(Key.LAYOUT_TYPE, LayoutType.LIST.name)
 
         fun setLayoutType(layoutType: LayoutType) {

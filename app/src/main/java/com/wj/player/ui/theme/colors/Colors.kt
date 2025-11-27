@@ -415,7 +415,7 @@ val themeColorArray = mapOf(
     ThemeType.THEME_25 to theme25ColorScheme,
 )
 
-// 创建CompositionLocal实例，默认值为白色主题
+// 创建颜色 CompositionLocal实例，默认值为白色主题
 val LocalColorScheme = compositionLocalOf<ColorScheme> {
     // 默认颜色配置（白色主题）
     lightColorScheme

@@ -15,6 +15,8 @@ import com.wj.player.ui.theme.resource.lightImageScheme
 import com.wj.player.ui.theme.resource.themeImageArray
 import com.wj.player.ui.theme.textstyle.LocalTypography
 
+// ui/theme/Theme.kt
+// 主题类型
 enum class ThemeType {
     ADAPTIVE, DARK, LIGHT, THEME_2, THEME_3, THEME_4, THEME_5, THEME_6, THEME_7, THEME_8, THEME_9,
     THEME_10, THEME_11, THEME_12, THEME_13, THEME_14, THEME_15, THEME_16, THEME_17, THEME_18,
@@ -27,8 +29,7 @@ fun MJPlayerTheme(
     content: @Composable () -> Unit,
 ) {
 
-    val dimensions = rememberAppDimensions()
-
+    // 根据主题类型选择颜色方案
     val colorScheme = if (ThemeType.ADAPTIVE == themeType) {
         if (isSystemInDarkTheme()) {
             darkColorScheme
@@ -39,6 +40,7 @@ fun MJPlayerTheme(
         themeColorArray[themeType] ?: lightColorScheme
     }
 
+    // 根据主题类型选择图标方案
     val imageScheme = if (ThemeType.ADAPTIVE == themeType) {
         if (isSystemInDarkTheme()) {
             darkImageScheme
@@ -50,10 +52,8 @@ fun MJPlayerTheme(
     }
 
     CompositionLocalProvider(
-        LocalAppDimensions provides dimensions,
         LocalColorScheme provides colorScheme,
         LocalImageScheme provides imageScheme,
-        LocalTypography provides LocalTypography.current,
         content = content,
     )
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import com.wj.player.MJConstants
 import com.wj.player.arch.ArchActivity
 import com.wj.player.ui.theme.MJPlayerTheme
+import com.wj.player.ui.theme.ThemeType
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
@@ -26,9 +27,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ArchActivity() {
-
-    private var currentTheme = MJConstants.Theme.getThemeType()
     private lateinit var hiSystemUiControl: HiSystemBarsController
+
+    private lateinit var themeListener: (ThemeType) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
         hiSystemUiControl = HiSystemBarsController(this)
@@ -57,10 +58,10 @@ class MainActivity : ArchActivity() {
             }
         }
         super.onCreate(savedInstanceState)
-        MJConstants.Theme.addThemeListener { themeType ->
-            currentTheme = themeType
+        // 定义主题变更监听
+        themeListener = { themeType ->
             setContent {
-                MJPlayerTheme(themeType = currentTheme) {
+                MJPlayerTheme(themeType = themeType) {
                     CompositionLocalProvider(
                         LocalOrientationController provides ::toggleOrientation,
                         LocalIsLandscape provides ::isLandscape,
@@ -97,4 +98,9 @@ class MainActivity : ArchActivity() {
 
     private fun isLandscape() =
         resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    override fun onDestroy() {
+        super.onDestroy()
+        MJConstants.Theme.addThemeListener(themeListener)
+    }
 }
