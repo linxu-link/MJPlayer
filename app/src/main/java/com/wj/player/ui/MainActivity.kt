@@ -74,6 +74,7 @@ class MainActivity : ArchActivity() {
                 }
             }
         }
+        MJConstants.Theme.addThemeListener(themeListener)
     }
 
     private fun toggleFullScreen(show: Boolean) {
