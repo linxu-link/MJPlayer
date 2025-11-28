@@ -8,6 +8,9 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.theme.textstyle.LocalTypography
+import com.wj.player.ui.view.TextCaption
 
 /**
  * 在文本中高亮显示与关键词匹配的部分（大小写不敏感）
@@ -20,19 +23,14 @@ import androidx.compose.ui.text.withStyle
 fun HighlightedText(
     text: String,
     keyword: String,
-    style: TextStyle,
     modifier: Modifier = Modifier,
     highlightStyle: SpanStyle = SpanStyle(
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = MaterialTheme.typography.bodyMedium.fontWeight,
+        color = LocalColorScheme.current.accent
     ),
 ) {
     // 处理空关键词或空文本的特殊情况
     if (keyword.isBlank() || text.isBlank()) {
-        Text(
-            text = text,
-            style = style,
-        )
+        TextCaption(text = text)
         return
     }
 
@@ -59,17 +57,11 @@ fun HighlightedText(
             withStyle(highlightStyle) {
                 append(text.substring(keywordStart, keywordEnd))
             }
-
             // 移动起始位置继续查找
             startIndex = keywordEnd
         }
     }
 
     // 显示带高亮的文本
-    Text(
-        modifier = modifier,
-        maxLines = 1,
-        text = annotatedText,
-        style = style,
-    )
+    TextCaption(modifier = modifier, text = annotatedText)
 }

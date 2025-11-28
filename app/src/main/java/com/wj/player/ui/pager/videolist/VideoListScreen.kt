@@ -64,6 +64,7 @@ import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.wj.player.MJConstants
+import com.wj.player.R
 import com.wj.player.data.entity.LayoutType
 import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.ui.theme.colors.Colors
@@ -90,7 +91,6 @@ fun VideoListScreen(
     onFloatingBarClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: VideoViewModel = hiltViewModel(),
-    snackBarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
 
     // 权限请求
@@ -116,9 +116,7 @@ fun VideoListScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        snackbarHost = {
-            SnackbarHost(hostState = snackBarHostState)
-        },
+        snackbarHost = {},
         topBar = {
             VideoListTopAppBar(
                 layoutType = uiState.layoutType,
@@ -158,15 +156,6 @@ fun VideoListScreen(
             modifier = modifier
                 .padding(innerPadding),
         )
-
-        // 处理用户消息
-        uiState.userMessage?.let { messageResId ->
-            val snackbarText = stringResource(id = messageResId)
-            LaunchedEffect(snackBarHostState, messageResId) {
-                snackBarHostState.showSnackbar(snackbarText)
-                viewModel.clearUserMessage() // 显示后清除消息
-            }
-        }
     }
 }
 
@@ -249,11 +238,10 @@ private fun GridColumn(
                         .padding(20.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = "刷新失败：${error.error.message}\n可再次下拉重试",
+                    TextCaption(
+                        text = stringResource(R.string.refresh_failed, error.error.message ?: ""),
                         textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.error,
-                        fontSize = 14.sp,
+                        color = LocalColorScheme.current.accent,
                     )
                 }
             }
@@ -271,11 +259,10 @@ private fun GridColumn(
                         .padding(top = 80.dp),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(
-                        text = "未检测到本地视频",
+                    TextCaption(
+                        text = stringResource(R.string.no_videos),
                         textAlign = TextAlign.Center,
-                        fontSize = 16.sp,
-                        color = MaterialTheme.colorScheme.onBackground,
+                        color = LocalColorScheme.current.textPrimaryInverse,
                     )
                 }
             }
@@ -318,7 +305,7 @@ private fun GridColumn(
                     ) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(32.dp),
-                            color = MaterialTheme.colorScheme.primary,
+                            color = LocalColorScheme.current.accent,
                             strokeWidth = 2.dp,
                         )
                     }
@@ -334,11 +321,10 @@ private fun GridColumn(
                             .noRippleClickable { pagingVideos.retry() },
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(
-                            text = "加载更多失败，点击重试",
+                        TextCaption(
+                            text = stringResource(R.string.fresh_retry),
                             textAlign = TextAlign.Center,
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.primary,
+                            color = LocalColorScheme.current.textPrimaryInverse,
                         )
                     }
                 }
@@ -367,10 +353,9 @@ private fun VideoGroupItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 16.dp, vertical = 0.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-
             VideoGroupItemTitle(
                 modifier = Modifier.weight(1f),
                 videoSize = videos.size,
@@ -412,7 +397,7 @@ private fun VideoGroupItem(
                         .heightIn(
                             max = calculateGridMaxHeight(
                                 rowCount = 3,
-                                itemAspectRatio = 16f / 9f,
+                                itemAspectRatio = 16f / 11f,
                             ),
                         ),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -422,7 +407,7 @@ private fun VideoGroupItem(
                         VideoThumbnailGroupItem(
                             video = videos[index],
                             onVideoClick = onVideoClick,
-                            modifier = Modifier.aspectRatio(16f / 9f),
+                            modifier = Modifier,
                         )
                     }
                 }
@@ -432,7 +417,7 @@ private fun VideoGroupItem(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp), // 列表项间距8dp
+                    verticalArrangement = Arrangement.spacedBy(12.dp), // 列表项间距12dp
                 ) {
                     videos.forEachIndexed { index, video ->
                         // 单个视频列表项（横向布局：缩略图 + 标题 + 时长）
@@ -529,25 +514,42 @@ private fun VideoThumbnailListItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
             .noRippleClickable { onVideoClick(video) },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        ImageVideo(
-            videoTitle = video.title,
-            videoId = video.id,
-            videoPath = video.path,
-            thumbnailPath = video.thumbnailPath ?: "",
-            modifier = Modifier.weight(1f),
-        )
-
-        Column(
-            modifier = Modifier.weight(3f),
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(8.dp))
+                .weight(1f)
+                .noRippleClickable { onVideoClick(video) }, // 处理点击事件
         ) {
-            TextBody(text = video.title)
+            ImageVideo(
+                videoTitle = video.title,
+                videoId = video.id,
+                videoPath = video.path,
+                thumbnailPath = video.thumbnailPath ?: "",
+            )
+
+            TextCaption(
+                text = VideoTimeUtils.formatVideoDuration(video.duration),
+                color = Colors.white,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .align(Alignment.BottomEnd)
+                    .padding(horizontal = 2.dp, vertical = 2.dp),
+            )
+        }
+
+        Column(modifier = Modifier.weight(3f)) {
+            TextCaption(text = video.title, color = LocalColorScheme.current.textPrimaryInverse)
             Spacer(modifier = Modifier.size(14.dp))
-            VideoItemDesc(video = video)
+            VideoItemDesc(
+                videoSize = video.size,
+                videoUpdateTime = video.updateTime,
+            )
         }
     }
 }

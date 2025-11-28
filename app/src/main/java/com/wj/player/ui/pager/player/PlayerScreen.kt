@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -15,7 +16,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -23,6 +27,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.wj.player.data.entity.Video
+import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
 import com.wj.player.ui.theme.configuration.LocalSystemUiControl
@@ -59,9 +64,7 @@ fun PlayerScreen(
 
     Scaffold(
         modifier = Modifier
-            .background(
-                Color.Black,
-            )
+            .background(Color.Black)
             .fillMaxSize(),
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState)
@@ -112,24 +115,28 @@ private fun VideoPlayerContent(
     val toggleOrientation = LocalOrientationController.current
     val isLandscape = LocalIsLandscape.current
 
-     BackHandler(enabled = true) {
+    BackHandler(enabled = true) {
         if (isLandscape()) {
+            onBackClick()
             toggleOrientation()
         } else {
             onBackClick()
         }
     }
+    val hiSystemBarsController = LocalSystemUiControl.current
+    val statusBarHeight = remember { hiSystemBarsController.getStatusBarHeight() }
+    val statusBarHeightDp = with(LocalDensity.current) { statusBarHeight.toDp() }
 
     SampleVideoPlayer(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Color.Black,
-            ),
+            .background(Color.Black)
+            .padding(top = statusBarHeightDp),
         controller = playerController,
         uiConfig = playerUiConfig,
         onBackClick = {
             if (isLandscape()) {
+                onBackClick()
                 toggleOrientation()
             } else {
                 onBackClick()
@@ -137,5 +144,13 @@ private fun VideoPlayerContent(
         },
         onRotateToggle = toggleOrientation,
     )
+
+    DisposableEffect(Unit) {
+        hiSystemBarsController.hideNavigationBar()
+        onDispose {
+            playerController.release()
+            hiSystemBarsController.showNavigationBar()
+        }
+    }
 
 }

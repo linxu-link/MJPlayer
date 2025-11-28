@@ -5,6 +5,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CropRotate
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Speed
 import androidx.compose.material.icons.rounded.Pause
@@ -33,6 +34,7 @@ class PlayerUiConfig private constructor(
     val pauseIcon: @Composable () -> Unit,
     val rotateIcon: @Composable () -> Unit,
     val lockIcon: @Composable () -> Unit,
+    val unlockIcon: @Composable () -> Unit,
     val forwardIcon: @Composable () -> Unit,
     val backwardIcon: @Composable () -> Unit,
 
@@ -65,6 +67,9 @@ class PlayerUiConfig private constructor(
         private var lockIcon: @Composable () -> Unit = {
             Icon(Icons.Default.Lock, "Lock", tint = controlsContentColor)
         }
+        private var unlockIcon: @Composable () -> Unit = {
+            Icon(Icons.Default.LockOpen, "Unlock", tint = controlsContentColor)
+        }
         private var forwardIcon: @Composable () -> Unit = {
             Icon(Icons.Default.PlayArrow, "Forward", tint = controlsContentColor)
         }
@@ -92,6 +97,7 @@ class PlayerUiConfig private constructor(
         fun pauseIcon(icon: @Composable () -> Unit) = apply { this.pauseIcon = icon }
         fun rotateIcon(icon: @Composable () -> Unit) = apply { this.rotateIcon = icon }
         fun lockIcon(icon: @Composable () -> Unit) = apply { this.lockIcon = icon }
+        fun unlockIcon(icon: @Composable () -> Unit) = apply { this.unlockIcon = icon }
         fun forwardIcon(icon: @Composable () -> Unit) = apply { this.forwardIcon = icon }
         fun backwardIcon(icon: @Composable () -> Unit) = apply { this.backwardIcon = icon }
 
@@ -111,6 +117,7 @@ class PlayerUiConfig private constructor(
             backIcon = backIcon,
             speedIcon = speedIcon,
             lockIcon = lockIcon,
+            unlockIcon = unlockIcon,
 
             title = title,
             speedOptions = speedOptions,

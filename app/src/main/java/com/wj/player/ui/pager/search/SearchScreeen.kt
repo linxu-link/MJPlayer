@@ -31,6 +31,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.DoNotDisturb
 import androidx.compose.material.icons.rounded.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -63,7 +64,12 @@ import com.wj.player.R
 import com.wj.player.data.entity.SearchHistory
 import com.wj.player.data.entity.Video
 import com.wj.player.data.source.local.video.room.VideoEntity
+import com.wj.player.ui.pager.videolist.VideoItemDesc
+import com.wj.player.ui.theme.colors.Colors
+import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.view.ImageVideo
+import com.wj.player.ui.view.TextBody
+import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.header.SearchTopAppBar
 import com.wj.player.ui.view.noRippleClickable
 import com.wj.player.ui.view.text.HighlightedText
@@ -76,6 +82,7 @@ fun SearchScreen(
     modifier: Modifier = Modifier,
     viewModel: SearchViewModel = hiltViewModel(),
     onNavigateBack: () -> Unit,
+    onVideoClick: (Video) -> Unit,
 ) {
     // 仅观察一个状态流（符合单一来源原则）
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -124,6 +131,7 @@ fun SearchScreen(
                             videos = uiState.searchResults,
                             listState = uiStateHolder.listState,
                             keyword = uiState.keyword,
+                            onVideoClick = onVideoClick,
                         )
                     }
                 } else {
@@ -163,17 +171,20 @@ private fun SearchHistoryList(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Text(
-                text = if (inSearch) "搜索结果" else "搜索历史",
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.Gray,
-            )
+            if (inSearch) {
+                if (histories.isNotEmpty()) {
+                    TextCaption(
+                        text = if (inSearch) stringResource(R.string.search_result) else stringResource(
+                            R.string.search_history,
+                        ),
+                        color = LocalColorScheme.current.textPrimaryInverse,
+                    )
+                }
+            }
             if (histories.isNotEmpty() && inSearch.not()) {
-                Text(
-                    text = "清空全部",
-                    fontSize = 13.sp,
-                    color = MaterialTheme.colorScheme.primary,
+                TextCaption(
+                    text = stringResource(R.string.clear_all),
+                    color = LocalColorScheme.current.accent,
                     modifier = Modifier.noRippleClickable { onClearAllClick() },
                 )
             }
@@ -222,17 +233,18 @@ private fun SearchResultList(
     listState: LazyListState,
     keyword: String,
     modifier: Modifier = Modifier,
+    onVideoClick: (Video) -> Unit,
 ) {
     LazyColumn(
-        state = listState, // 绑定界面逻辑容器的滚动状态
+        state = listState,
         modifier = modifier.fillMaxSize(),
     ) {
         items(videos, key = { it.id }) { video ->
             VideoThumbnailListItem(
                 video = video,
                 keyword = keyword,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
-                onVideoClick = { },
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                onVideoClick = onVideoClick,
             )
         }
     }
@@ -252,61 +264,44 @@ private fun VideoThumbnailListItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
             .noRippleClickable { onVideoClick(video) },
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        ImageVideo(
-            videoTitle = video.title,
-            videoId = video.id,
-            videoPath = video.path,
-            thumbnailPath = video.thumbnailPath ?: "",
-            modifier = Modifier.weight(1f),
-        )
-
-        // 视频信息（标题 + 时长，占比3/4）
-        Column(
-            modifier = Modifier.weight(3f),
-            verticalArrangement = Arrangement.Top,
+        Box(
+            modifier = modifier
+                .clip(RoundedCornerShape(8.dp))
+                .weight(1f)
+                .noRippleClickable { onVideoClick(video) }, // 处理点击事件
         ) {
+            ImageVideo(
+                videoTitle = video.title,
+                videoId = video.id,
+                videoPath = video.path,
+                thumbnailPath = video.thumbnailPath ?: "",
+            )
+
+            TextCaption(
+                text = VideoTimeUtils.formatVideoDuration(video.duration),
+                color = Colors.white,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .align(Alignment.BottomEnd)
+                    .padding(horizontal = 2.dp, vertical = 2.dp),
+            )
+        }
+
+        Column(modifier = Modifier.weight(3f)) {
             HighlightedText(
                 text = video.title,
                 keyword = keyword,
-                style = TextStyle(
-                    fontSize = 15.sp,
-                    color = MaterialTheme.colorScheme.onSurface,
-                ),
             )
-
-            // 关键：用权重Spacer占满中间空白区域，将底部Row推到最底部
-            Spacer(modifier = Modifier.size(10.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp), // 优化分隔符间距
-            ) {
-                Text(
-                    text = VideoTimeUtils.formatVideoSize(video.size),
-                    fontSize = 12.sp,
-                    color = Color.Gray,
-                    modifier = Modifier,
-                )
-
-                Text(
-                    text = "|",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Gray,
-                    modifier = Modifier,
-                )
-
-                Text(
-                    text = VideoTimeUtils.formatVideoSimpleDate(video.updateTime),
-                    fontSize = 12.sp,
-                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
-                    modifier = Modifier,
-                )
-            }
+            Spacer(modifier = Modifier.size(14.dp))
+            VideoItemDesc(
+                videoSize = video.size,
+                videoUpdateTime = video.updateTime,
+            )
         }
     }
 }
@@ -321,7 +316,7 @@ private fun SearchHistoryItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.LightGray, RoundedCornerShape(12.dp))
+            .background(Colors.lightGrey, RoundedCornerShape(4.dp))
             .noRippleClickable { onItemClick() },
     ) {
         Row(
@@ -329,11 +324,9 @@ private fun SearchHistoryItem(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Text(
+            TextCaption(
+                color = Colors.dark,
                 text = keyword,
-                fontSize = 15.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
                 modifier = Modifier.weight(1f),
             )
             IconButton(
@@ -432,17 +425,16 @@ private fun EmptyHistoryHint(
     ) {
         // 历史图标（灰色，半透明）
         Icon(
-            imageVector = Icons.Outlined.AccountBox,
+            imageVector = Icons.Outlined.DoNotDisturb,
             contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            tint = LocalColorScheme.current.textPrimary.copy(alpha = 0.5f),
             modifier = Modifier.size(64.dp),
         )
 
         // 提示文本
-        Text(
+        TextBody(
             text = stringResource(R.string.empty_history_hint), // 资源文件定义："暂无搜索历史"
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = LocalColorScheme.current.textPrimary,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(top = 16.dp)

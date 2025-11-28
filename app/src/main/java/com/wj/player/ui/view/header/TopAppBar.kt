@@ -175,7 +175,11 @@ fun SearchTopAppBar(
                     modifier = Modifier
                         .fillMaxWidth(1f)
                         .height(40.dp)
-                        .border(1.dp, Color.Gray, RoundedCornerShape(16.dp))
+                        .border(
+                            width = 0.5.dp,
+                            color = LocalColorScheme.current.textPrimary,
+                            shape = RoundedCornerShape(8.dp),
+                        )
                         .focusRequester(focusRequester)
                         .padding(horizontal = 16.dp, vertical = 10.dp),
                     decorationBox = { innerTextField ->
@@ -186,7 +190,7 @@ fun SearchTopAppBar(
                             Icon(
                                 imageVector = MJConstants.Icon.SEARCH,
                                 contentDescription = "搜索",
-                                tint = LocalColorScheme.current.textSecondary,
+                                tint = LocalColorScheme.current.textPrimary,
                                 modifier = Modifier.size(20.dp), // 统一图标尺寸
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -196,10 +200,9 @@ fun SearchTopAppBar(
                                     .wrapContentHeight(Alignment.CenterVertically),
                             ) {
                                 if (searchText.isEmpty()) {
-                                    Text(
-                                        "请输入关键词...",
-                                        color = Color.Gray,
-                                        fontSize = 16.sp,
+                                    TextCaption(
+                                        text = stringResource(R.string.input_hint),
+                                        color = LocalColorScheme.current.textPrimaryInverse,
                                         modifier = Modifier.align(Alignment.CenterStart),
                                     )
                                 }
@@ -361,13 +364,13 @@ private fun VideoListTopAppBarPreview() {
     MJPlayerTheme {
         Surface {
             Column() {
-//                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
+                VideoListTopAppBar(LayoutType.LIST, { }, { }, {}, {}, {})
                 CommonTopAppBar(R.string.app_name) { }
-//                SearchTopAppBar(
-//                    onSearchTextChange = {},
-//                    onBack = {},
-//                )
-//                SelectText(text = "全部", isSelected = true)
+                SearchTopAppBar(
+                    onSearchTextChange = {},
+                    onBack = {},
+                )
+                SelectText(text = "全部", isSelected = true)
             }
         }
     }

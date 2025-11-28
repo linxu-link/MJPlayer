@@ -62,6 +62,9 @@ fun MJNaviGraph(
             SearchScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
+                onVideoClick = { video ->
+                    navActions.navigateToPlayer(video.id)
+                },
             )
         }
 

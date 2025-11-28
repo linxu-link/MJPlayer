@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIosNew
 import androidx.compose.material3.Icon
@@ -36,7 +37,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.wj.player.MJConstants
 import com.wj.player.R
+import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.view.TextCaption
+import com.wj.player.ui.view.TextTitle
 import com.wj.player.ui.view.noRippleClickable
 
 data class SheetOption(
@@ -53,14 +58,14 @@ fun BottomSheet(
     onCloseClick: () -> Unit,
     leftIcon: @Composable () -> Unit = {
         Icon(
-            imageVector = Icons.Default.ArrowBackIosNew,
+            imageVector = MJConstants.Icon.ARROW_BACK,
             modifier = Modifier.rotate(
                 degrees = 270f,
             ),
             contentDescription = null,
+            tint = LocalColorScheme.current.textPrimaryInverse,
         )
     },
-    contentColor: Color = Color.Black,
 ) {
     AnimatedVisibility(
         visible = visible,
@@ -77,25 +82,23 @@ fun BottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(
+                    color = LocalColorScheme.current.surface,
+                    shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+                ),
         ) {
             Box(
                 modifier = Modifier.fillMaxWidth(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 IconButton(
                     onClick = onCloseClick,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .align(Alignment.CenterStart),
+                    modifier = Modifier.align(Alignment.CenterStart),
                 ) { leftIcon() }
 
-                Text(
-                    text = "倍速",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = contentColor,
-                    maxLines = 1,
+                TextTitle(
+                    text = stringResource(R.string.video_speed),
+                    color = LocalColorScheme.current.textPrimaryInverse,
                 )
             }
 
@@ -125,11 +128,9 @@ private fun SheetOptionItem(option: SheetOption) {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
+        TextCaption(
             text = option.title + if (option.isSelected) stringResource(R.string.speed_selected) else "",
-            style = MaterialTheme.typography.bodyLarge,
-            color = Color.Black,
-            fontSize = 18.sp,
+            color = if (option.isSelected) LocalColorScheme.current.accent else LocalColorScheme.current.textPrimaryInverse,
         )
     }
 }

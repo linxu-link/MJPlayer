@@ -35,16 +35,17 @@ fun VideoGroupItemTitle(
 
 @Composable
 fun VideoItemDesc(
-    video: VideoEntity,
+    videoSize: Long,
+    videoUpdateTime: Long,
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-        TextCaption(text = VideoTimeUtils.formatVideoSize(video.size))
+        TextCaption(text = VideoTimeUtils.formatVideoSize(videoSize))
 
         TextCaption(text = "|", modifier = Modifier.padding(horizontal = 4.dp))
 
-        TextCaption(text = VideoTimeUtils.formatVideoSimpleDate(video.updateTime))
+        TextCaption(text = VideoTimeUtils.formatVideoSimpleDate(videoUpdateTime))
     }
 }
 
@@ -59,16 +60,8 @@ private fun VideoItemDescPreview() {
         )
 
         VideoItemDesc(
-            video = VideoEntity(
-                id = 1,
-                title = "测试视频",
-                path = "https://www.baidu.com",
-                size = 1024 * 1024 * 100,
-                duration = 100,
-                updateTime = System.currentTimeMillis(),
-                thumbnailPath = "https://www.baidu.com",
-                lastScanTime = System.currentTimeMillis(),
-            )
+            videoSize = 1024 * 1024 * 100,
+            videoUpdateTime = System.currentTimeMillis(),
         )
     }
 }

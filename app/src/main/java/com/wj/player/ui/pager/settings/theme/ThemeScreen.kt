@@ -34,13 +34,13 @@ import com.wj.player.data.entity.getGradientColors
 import com.wj.player.data.entity.isGradient
 import com.wj.player.ui.theme.ThemeType
 import com.wj.player.ui.theme.colors.Colors
+import com.wj.player.ui.theme.dimens.LocalAppDimensions
 import com.wj.player.ui.theme.resource.LocalImageScheme
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextSmall
 import com.wj.player.ui.view.header.CommonTopAppBar
 import com.wj.player.ui.view.noRippleClickable
-import com.wujia.toolkit.utils.HiLog
 import kotlin.math.ceil
 
 
@@ -224,7 +224,7 @@ private fun ClassicThemeGrid(
         for (row in 0 until rows) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 for (col in 0 until columns) {
                     val index = row * columns + col
@@ -267,7 +267,7 @@ private fun ClassicThemeItem(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(25.dp)
+                        .height(LocalAppDimensions.current.colorBlockSize / 2)
                         .align(Alignment.TopCenter)
                         .background(theme.getGradientColors()[0]),
                 )
@@ -275,7 +275,7 @@ private fun ClassicThemeItem(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(25.dp)
+                        .height(LocalAppDimensions.current.colorBlockSize / 2)
                         .align(Alignment.BottomCenter)
                         .background(theme.getGradientColors()[1]),
                 )

@@ -7,6 +7,7 @@ import android.view.View
 import android.view.Window
 import android.view.WindowInsets
 import androidx.annotation.RequiresApi
+import com.wujia.toolkit.HiAppGlobal
 
 /**
  * 系统栏控制工具类 (Kotlin)
@@ -18,6 +19,19 @@ class HiSystemBarsController(private val activity: Activity) {
 
     private val window: Window = activity.window
     private var visibilityChangeListener: OnSystemBarsVisibilityChangeListener? = null
+
+    /**
+     * 获取状态栏高度
+     */
+    fun getStatusBarHeight(): Int {
+        val context = HiAppGlobal.getApplication()
+        var result = 0
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
+    }
 
     /**
      * 隐藏状态栏

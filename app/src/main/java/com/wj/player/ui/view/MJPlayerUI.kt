@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -21,12 +22,14 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wj.player.R
 import com.wj.player.ui.theme.colors.LocalColorScheme
+import com.wj.player.ui.theme.dimens.LocalAppDimensions
 import com.wj.player.ui.theme.textstyle.LocalTypography
 import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 
@@ -70,6 +73,25 @@ fun TextBody(
 fun TextCaption(
     modifier: Modifier = Modifier,
     text: String,
+    color: Color = LocalColorScheme.current.textSecondary,
+    textAlign: TextAlign = TextAlign.Start,
+) {
+    Text(
+        modifier = modifier,
+        text = text,
+        textAlign = textAlign,
+        softWrap = false,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        style = LocalTypography.current.caption,
+        color = color,
+    )
+}
+
+@Composable
+fun TextCaption(
+    modifier: Modifier = Modifier,
+    text: AnnotatedString,
     color: Color = LocalColorScheme.current.textSecondary,
     textAlign: TextAlign = TextAlign.Start,
 ) {
@@ -133,7 +155,7 @@ fun ImageVideo(
         },
         contentDescription = videoTitle,
         modifier = modifier
-            .aspectRatio(16f / 9f)
+            .aspectRatio(16f / 11f)
             .clip(RoundedCornerShape(4.dp)),
         contentScale = ContentScale.Crop,
     )

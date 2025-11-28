@@ -93,6 +93,7 @@ class ExoplayerControllerImpl(
     override fun loadMedia(uri: Uri) {
         exoPlayer.setMediaItem(MediaItem.fromUri(uri))
         exoPlayer.prepare()
+        exoPlayer.playWhenReady = true
     }
 
     override fun playPause() {

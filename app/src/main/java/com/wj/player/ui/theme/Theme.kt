@@ -29,6 +29,8 @@ fun MJPlayerTheme(
     content: @Composable () -> Unit,
 ) {
 
+    val appDimensions = rememberAppDimensions()
+
     // 根据主题类型选择颜色方案
     val colorScheme = if (ThemeType.ADAPTIVE == themeType) {
         if (isSystemInDarkTheme()) {
@@ -52,8 +54,10 @@ fun MJPlayerTheme(
     }
 
     CompositionLocalProvider(
+        LocalAppDimensions provides appDimensions,
         LocalColorScheme provides colorScheme,
         LocalImageScheme provides imageScheme,
+        LocalTypography provides LocalTypography.current,
         content = content,
     )
 

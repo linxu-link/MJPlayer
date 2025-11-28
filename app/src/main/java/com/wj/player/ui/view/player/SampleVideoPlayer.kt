@@ -29,7 +29,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -55,7 +54,8 @@ import com.wj.player.ui.view.player.base.PlayerState
 import com.wj.player.ui.view.player.ui.BottomSheet
 import com.wj.player.ui.view.player.ui.PlayerUiConfig
 import com.wj.player.ui.view.player.ui.SheetOption
-import com.wj.player.ui.view.player.ui.TopPlayerActionBar
+import com.wj.player.ui.view.player.ui.PlayerActionBar
+import com.wj.player.ui.view.player.ui.PlayerSeekBar
 import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -72,13 +72,11 @@ fun SampleVideoPlayer(
     uiConfig: PlayerUiConfig,
     onRotateToggle: () -> Unit = {},
     onBackClick: () -> Unit = {},
-    onLockClick: () -> Unit = {},
 ) {
-    val context = LocalContext.current
     val playerState by controller.playerState.collectAsState()
     var showVideoControls by remember { mutableStateOf(true) }
     var showSpeedSheet by remember { mutableStateOf(false) }
-
+    var isLocked by remember { mutableStateOf(false) }
     // 保存计时协程的Job，用于取消/重置计时
     var autoHideJob by remember { mutableStateOf<Job?>(null) }
 
@@ -105,6 +103,9 @@ fun SampleVideoPlayer(
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(
                 onTap = {
+                    if (isLocked) {
+                        return@detectTapGestures
+                    }
                     if (showSpeedSheet) {
                         showSpeedSheet = false
                     } else {
@@ -113,6 +114,9 @@ fun SampleVideoPlayer(
                     }
                 },
                 onDoubleTap = {
+                    if (isLocked) {
+                        return@detectTapGestures
+                    }
                     controller.playPause()
                 },
             )
@@ -146,24 +150,27 @@ fun SampleVideoPlayer(
             showSpeedSheet = showSpeedSheet,
             onRotateClick = onRotateToggle,
             onBackClick = onBackClick,
-            onLockClick = onLockClick,
+            onLockClick = {
+                isLocked = !isLocked
+                showVideoControls = !isLocked
+            },
             modifier = Modifier,
+            isLocked = isLocked,
         )
 
         // 缓冲指示器
         if (playerState.playbackState == PlaybackState.BUFFERING) {
             CircularProgressIndicator(
                 modifier = Modifier
-                    .size(48.dp)
+                    .background(
+                        color = Color.Black.copy(alpha = 0.3f),
+                        shape = CircleShape,
+                    )
+                    .size(56.dp)
+                    .padding(2.dp)
                     .align(Alignment.Center),
                 color = uiConfig.controlsContentColor,
             )
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            controller.release()
         }
     }
 }
@@ -182,59 +189,60 @@ private fun PlayerControls(
     onRotateClick: () -> Unit,
     onSpeedIconClick: (Boolean) -> Unit,
     onLockClick: () -> Unit,
+    isLocked: Boolean,
 ) {
 
-    val speedOptions = listOf(
-        SheetOption(
-            title = "3.0x",
-            onClick = {
-                onSpeedChange(3.0f)
-            },
-            isSelected = state.playbackSpeed == 3.0f,
-        ),
-        SheetOption(
-            title = "2.0x",
-            onClick = {
-                onSpeedChange(2.0f)
-            },
-            isSelected = state.playbackSpeed == 2.0f,
-        ),
-        SheetOption(
-            title = "1.0x",
-            onClick = {
-                onSpeedChange(1.0f)
-            },
-            isSelected = state.playbackSpeed == 1.0f,
-        ),
-        SheetOption(
-            title = "0.5x",
-            onClick = {
-                onSpeedChange(0.5f)
-            },
-            isSelected = state.playbackSpeed == 0.5f,
-        ),
-        SheetOption(
-            title = "0.25x",
-            onClick = {
-                onSpeedChange(0.25f)
-            },
-            isSelected = state.playbackSpeed == 0.25f,
-        ),
-        SheetOption(
-            title = "0.1x",
-            onClick = {
-                onSpeedChange(0.1f)
-            },
-            isSelected = state.playbackSpeed == 0.1f,
-        ),
-    )
+    val speedOptions = remember {
+        listOf(
+            SheetOption(
+                title = "3.0x",
+                onClick = {
+                    onSpeedChange(3.0f)
+                },
+                isSelected = state.playbackSpeed == 3.0f,
+            ),
+            SheetOption(
+                title = "2.0x",
+                onClick = {
+                    onSpeedChange(2.0f)
+                },
+                isSelected = state.playbackSpeed == 2.0f,
+            ),
+            SheetOption(
+                title = "1.0x",
+                onClick = {
+                    onSpeedChange(1.0f)
+                },
+                isSelected = state.playbackSpeed == 1.0f,
+            ),
+            SheetOption(
+                title = "0.5x",
+                onClick = {
+                    onSpeedChange(0.5f)
+                },
+                isSelected = state.playbackSpeed == 0.5f,
+            ),
+            SheetOption(
+                title = "0.25x",
+                onClick = {
+                    onSpeedChange(0.25f)
+                },
+                isSelected = state.playbackSpeed == 0.25f,
+            ),
+            SheetOption(
+                title = "0.1x",
+                onClick = {
+                    onSpeedChange(0.3f)
+                },
+                isSelected = state.playbackSpeed == 0.3f,
+            ),
+        )
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // 顶部控制栏
         PlayerTopBar(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(horizontal = 8.dp, vertical = 8.dp),
+            modifier = Modifier.align(Alignment.TopEnd),
             config = config,
             rightIconText =
                 if (state.playbackSpeed == 1.0f) {
@@ -252,22 +260,19 @@ private fun PlayerControls(
         if (config.showCenterBar) {
             // 中央播放/暂停按钮
             PlayerCenterBar(
-                modifier = modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                modifier = modifier.align(Alignment.Center),
                 onLockClick = onLockClick,
                 onRotateClick = onRotateClick,
                 config = config,
                 visible = showControls,
+                isLocked = isLocked,
             )
         }
 
         // 底部进度条
         if (config.showBottomSeekBar) {
             PlayerBottomSeekBar(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                modifier = Modifier.align(Alignment.BottomCenter),
                 config = config,
                 state = state,
                 visible = showControls,
@@ -277,13 +282,7 @@ private fun PlayerControls(
         }
 
         BottomSheet(
-            modifier = Modifier
-                .background(
-                    Color.White,
-                    RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
-                )
-                .align(Alignment.BottomCenter)
-                .padding(vertical = 4.dp),
+            modifier = Modifier.align(Alignment.BottomCenter),
             visible = showSpeedSheet,
             options = speedOptions,
             onCloseClick = {
@@ -314,21 +313,16 @@ private fun PlayerTopBar(
         ) + fadeOut(),
         modifier = modifier,
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start,
-            verticalAlignment = Alignment.CenterVertically, // 垂直居中
-        ) {
-            // 速度控制
-            TopPlayerActionBar(
-                title = config.title,
-                onBackClick = onBackClick,
-                onRightIconClick = onRightIconClick,
-                rightIconText = rightIconText,
-                leftIcon = config.backIcon,
-                rightIcon = if (config.showSpeedControl) config.speedIcon else null,
-            )
-        }
+        // 速度控制
+        PlayerActionBar(
+            modifier = Modifier.background(color = Color.Black.copy(alpha = 0.3f)),
+            title = config.title,
+            onBackClick = onBackClick,
+            onRightIconClick = onRightIconClick,
+            rightIconText = rightIconText,
+            leftIcon = config.backIcon,
+            rightIcon = if (config.showSpeedControl) config.speedIcon else null,
+        )
     }
 }
 
@@ -339,12 +333,13 @@ private fun PlayerCenterBar(
     onLockClick: () -> Unit,
     onRotateClick: () -> Unit,
     config: PlayerUiConfig,
+    isLocked: Boolean,
 ) {
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.fillMaxWidth().padding(horizontal = 12.dp),
     ) {
         AnimatedVisibility(
-            visible = visible,
+            visible = if (isLocked) true else visible,
             enter = slideInHorizontally(
                 initialOffsetX = { -it },
                 animationSpec = tween(durationMillis = animationDuration, easing = animationEasing),
@@ -357,10 +352,16 @@ private fun PlayerCenterBar(
         ) {
             IconButton(
                 onClick = onLockClick,
-                modifier = Modifier
-                    .size(48.dp),
+                modifier = Modifier.background(
+                    color = Color.Black.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(8.dp),
+                ),
             ) {
-                config.lockIcon()
+                if (isLocked) {
+                    config.lockIcon()
+                } else {
+                    config.unlockIcon()
+                }
             }
         }
 
@@ -378,7 +379,10 @@ private fun PlayerCenterBar(
         ) {
             IconButton(
                 onClick = onRotateClick,
-                modifier = Modifier.size(48.dp),
+                modifier = Modifier.background(
+                    color = Color.Black.copy(alpha = 0.3f),
+                    shape = RoundedCornerShape(8.dp),
+                ),
             ) {
                 config.rotateIcon()
             }
@@ -409,114 +413,14 @@ private fun PlayerBottomSeekBar(
         ) + fadeOut(tween(delayMillis = 150)),
         modifier = modifier,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 0.dp, end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            // 播放/暂停按钮：左对齐
-            IconButton(
-                onClick = onPlayPause,
-                modifier = Modifier.size(48.dp),
-            ) {
-                if (state.isPlaying) {
-                    config.pauseIcon()
-                } else {
-                    config.playIcon()
-                }
-            }
-
-            // 左侧时间文本（当前进度）
-            Text(
-                text = formatTime(state.currentPosition),
-                color = config.controlsContentColor,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 4.dp),
-            )
-
-            // Slider：居中占主要宽度
-            Box(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp)
-                    .height(24.dp),
-                contentAlignment = Alignment.Center,
-            ) {
-                Slider(
-                    value = state.currentPosition.toFloat(),
-                    onValueChange = { onSeek(it.toLong()) },
-                    valueRange = 0f..state.duration.toFloat(),
-                    track = { sliderPositions ->
-                        HiLog.e("sliderPositions.value: ${sliderPositions.value}")
-                        Box(
-                            modifier = Modifier
-                                .height(20.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            // 背景轨道（未播放部分）
-                            Box(
-                                modifier = Modifier
-                                    .height(4.dp)
-                                    .fillMaxWidth()
-                                    .background(
-                                        color = config.controlsContentColor.copy(alpha = 0.3f),
-                                        shape = RoundedCornerShape(2.dp),
-                                    ),
-                            )
-                            // 已播放进度条
-                            Box(
-                                modifier = Modifier
-                                    .height(4.dp)
-                                    .fillMaxWidth(fraction = sliderPositions.value / state.duration.toFloat())
-                                    .background(
-                                        color = config.controlsContentColor,
-                                        shape = RoundedCornerShape(2.dp),
-                                    )
-                                    .align(Alignment.CenterStart),
-                            )
-                        }
-                    },
-                    // 自定义滑块样式
-                    thumb = {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxHeight(),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .size(14.dp)
-                                    .background(
-                                        color = config.controlsContentColor,
-                                        shape = CircleShape,
-                                    ),
-                            )
-                        }
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            // 右侧时间文本（总时长）
-            Text(
-                text = formatTime(state.duration),
-                color = config.controlsContentColor,
-                fontSize = 12.sp,
-                modifier = Modifier.padding(horizontal = 4.dp),
-            )
-        }
+        PlayerSeekBar(
+            modifier = Modifier.background(color = Color.Black.copy(alpha = 0.3f)),
+            state = state,
+            config = config,
+            onPlayPause = onPlayPause,
+            onSeek = onSeek,
+        )
     }
-}
-
-// 辅助函数：格式化时间
-private fun formatTime(millis: Long): String {
-    val totalSeconds = millis / 1000
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
-    return String.format(Locale.CHINA, "%02d:%02d", minutes, seconds)
 }
 
 @Preview(showBackground = true)
@@ -549,6 +453,7 @@ private fun PlayerControlsPreview() {
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.Black.copy(alpha = 0.5f)),
+            isLocked = false,
         )
     }
 }

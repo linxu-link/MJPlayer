@@ -79,7 +79,7 @@ private fun loadThumbnailFromMediaStore(videoId: Long): Bitmap? {
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
                 videoId,
             )
-            context.contentResolver.loadThumbnail(uri, Size(200, 200), null)
+            context.contentResolver.loadThumbnail(uri, Size(250, 250), null)
         } else {
             // 旧版本使用 ThumbnailUtils
             MediaStore.Video.Thumbnails.getThumbnail(

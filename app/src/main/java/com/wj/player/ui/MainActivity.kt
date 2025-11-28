@@ -3,13 +3,9 @@ package com.wj.player.ui
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
-import android.view.View
 import android.view.WindowInsetsController
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
@@ -28,7 +24,6 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ArchActivity() {
     private lateinit var hiSystemUiControl: HiSystemBarsController
-
     private lateinit var themeListener: (ThemeType) -> Unit
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,9 +60,7 @@ class MainActivity : ArchActivity() {
                     CompositionLocalProvider(
                         LocalOrientationController provides ::toggleOrientation,
                         LocalIsLandscape provides ::isLandscape,
-                        LocalSystemUiControl provides{ show ->
-                            toggleFullScreen(show)
-                        },
+                        LocalSystemUiControl provides hiSystemUiControl,
                     ) {
                         MJNaviGraph(modifier = Modifier.background(LocalColorScheme.current.background))
                     }
@@ -75,14 +68,6 @@ class MainActivity : ArchActivity() {
             }
         }
         MJConstants.Theme.addThemeListener(themeListener)
-    }
-
-    private fun toggleFullScreen(show: Boolean) {
-        if (show) {
-            hiSystemUiControl.hideBothBars(IMMERSIVE_STICKY)
-        } else {
-            hiSystemUiControl.showBothBars()
-        }
     }
 
     // 屏幕方向切换方法（基于系统配置）
