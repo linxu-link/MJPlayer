@@ -304,6 +304,7 @@ private fun ClassicThemeItem(
     }
 }
 
+
 // 替换 OtherThemeItem，使用非惰性布局
 @Composable
 private fun OtherThemeGrid(
@@ -376,43 +377,32 @@ private fun OtherThemeCard(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
-private fun TopThemeListPreview() {
-    TopThemeList(
-        androidThemes = listOf(
-            ThemeEntity(
-                "Adaptive",
-                R.drawable.theme_list_dark_mask,
-                themeType = ThemeType.ADAPTIVE,
-                isSelected = true,
-            ),
-            ThemeEntity(
-                "Light Theme",
-                R.drawable.theme_list_dark_mask,
-                themeType = ThemeType.LIGHT,
-            ),
-            ThemeEntity("Dark Theme", R.drawable.theme_list_dark_mask, themeType = ThemeType.DARK),
-        ),
+private fun ThemeContentPreview() {
+    val androidThemes = listOf(
+        ThemeEntity(name = "Adaptive", themeType = ThemeType.ADAPTIVE, isSelected = true),
+        ThemeEntity(name = "Light", themeType = ThemeType.LIGHT),
+        ThemeEntity(name = "Dark", themeType = ThemeType.DARK),
+    )
+
+    val classicThemes = mutableListOf<ThemeEntity>()
+
+    for (type in ThemeType.entries) {
+        classicThemes.add(ThemeEntity(name = type.name, themeType = type))
+    }
+
+    val otherThemes = emptyList<ThemeEntity>()
+
+    ThemeContent(
+        androidThemes = androidThemes,
+        classicThemes = classicThemes,
+        otherThemes = otherThemes,
         onThemeSelected = {},
+        onClassicThemeSelected = {},
+        onOtherThemeSelected = {},
     )
 }
-
-@Preview
-@Composable
-private fun OtherThemeItemPreview() {
-    val otherThemes = listOf(
-        ThemeEntity("Zodiac Aries", R.drawable.ic_launcher),
-        ThemeEntity("Zodiac Aries", R.drawable.ic_launcher),
-        ThemeEntity("Zodiac Pisces", R.drawable.ic_launcher),
-    )
-
-    OtherThemeGrid(
-        themes = otherThemes,
-        onThemeSelected = {},
-    )
-}
-
 
 
 
