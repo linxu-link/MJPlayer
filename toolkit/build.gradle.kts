@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
 }
 
@@ -10,7 +11,6 @@ android {
 
     defaultConfig {
         minSdk = 26
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
@@ -31,10 +31,11 @@ android {
     kotlinOptions {
         jvmTarget = "17"
     }
-
+    buildFeatures {
+        compose = true
+    }
     lint {
         disable.add("NullSafeMutableLiveData")
-        // 也可以同时禁用其他可能有问题的检查
         disable.add("GradleDependency")
         abortOnError = false
         checkReleaseBuilds = false
@@ -59,8 +60,18 @@ dependencies {
     implementation(libs.androidx.startup.runtime)
     // dataStore
     implementation(libs.bundles.datastore)
+    // accompanist
+    implementation(libs.bundles.accompanist)
+    // compose
+    implementation(platform(libs.compose.bom))
+    implementation(libs.bundles.compose)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.compose.bom))
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
+
 }

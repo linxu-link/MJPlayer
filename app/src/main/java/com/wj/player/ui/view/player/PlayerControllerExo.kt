@@ -9,10 +9,9 @@ import androidx.media3.common.PlaybackParameters
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
-import com.wj.player.ui.view.player.base.BasePlayerController
+import com.wj.player.ui.view.player.base.AbsPlayerController
 import com.wj.player.ui.view.player.base.PlaybackState
 import com.wj.player.ui.view.player.base.PlayerState
-import com.wujia.toolkit.utils.HiLog
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -22,13 +21,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 /**
- * ExoplayerControllerImpl 是 ExoPlayer 的具体实现类，继承自 BasePlayerController。
+ * ExoplayerControllerImpl 是 ExoPlayer 的具体实现类，继承自 AbsPlayerController。
  */
 @UnstableApi
 class ExoplayerControllerImpl(
     private val context: Context,
     private val config: PlayerConfig,
-) : BasePlayerController() {
+) : AbsPlayerController() {
 
     private val _playerState = MutableStateFlow(PlayerState())
     override val playerState = _playerState.asStateFlow()

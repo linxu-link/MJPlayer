@@ -52,6 +52,7 @@ dependencies {
     // compose
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
+    implementation(libs.compose.navigation)
     // paging + room
     implementation(libs.bundles.paging)
     implementation(libs.bundles.room)
@@ -60,8 +61,6 @@ dependencies {
     implementation(libs.androidx.workmanager)
     // startUp
     implementation(libs.androidx.startup.runtime)
-    // webview
-    implementation(libs.accompanist.webview)
     // media
     implementation(libs.bundles.media)
     // dataStore
@@ -76,8 +75,6 @@ dependencies {
     implementation(libs.coil.compose)
     // retrofit+okhttp
     implementation(libs.bundles.net)
-
-
 
     // test
     testImplementation(libs.junit)

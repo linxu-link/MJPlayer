@@ -74,7 +74,7 @@ import com.wj.player.ui.view.ImageVideo
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.header.VideoListTopAppBar
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
 import com.wj.player.utils.MultiplePermissionsRequest
 import com.wj.player.utils.VideoTimeUtils
 import com.wujia.toolkit.utils.HiLog

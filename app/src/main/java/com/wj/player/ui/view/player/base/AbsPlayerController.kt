@@ -1,7 +1,7 @@
 package com.wj.player.ui.view.player.base
 
 // 抽象播放器基类
-abstract class BasePlayerController : IVideoPlayerController {
+abstract class AbsPlayerController : IVideoPlayerController {
     protected abstract fun initializePlayer()
     protected abstract fun updateState(update: PlayerState.() -> PlayerState)
 

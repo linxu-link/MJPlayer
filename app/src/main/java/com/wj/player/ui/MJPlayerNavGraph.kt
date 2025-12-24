@@ -25,7 +25,7 @@ import com.wj.player.ui.pager.videolist.VideoListScreen
 import kotlinx.coroutines.CoroutineScope
 
 const val NAVIGATION_ANIMATION_DURATION = 450
-const val NAVIGATION_ANIMATION_FADE_DURATION = 300
+const val NAVIGATION_ANIMATION_FADE_DURATION = 400
 
 @Composable
 fun MJNaviGraph(

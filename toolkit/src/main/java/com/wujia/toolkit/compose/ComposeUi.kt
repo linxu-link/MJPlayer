@@ -1,4 +1,4 @@
-package com.wj.player.ui.view
+package com.wujia.toolkit.compose
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -42,4 +42,3 @@ fun Modifier.noRippleClickable(
         onClick = onClick,
     )
 }
-

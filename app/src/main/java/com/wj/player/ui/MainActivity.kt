@@ -4,9 +4,9 @@ import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
-import android.view.WindowInsetsController
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import com.wj.player.MJConstants
@@ -16,50 +16,48 @@ import com.wj.player.ui.theme.ThemeType
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
-import com.wj.player.ui.theme.configuration.LocalSystemUiControl
+import com.wj.player.ui.theme.configuration.LocalSystemBarsController
 import com.wujia.toolkit.system.HiSystemBarsController
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ArchActivity() {
-    private lateinit var hiSystemUiControl: HiSystemBarsController
     private lateinit var themeListener: (ThemeType) -> Unit
+    private val systemBars by lazy { HiSystemBarsController(activity = this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        hiSystemUiControl = HiSystemBarsController(this)
-        // 配置 Window，让状态栏透明且内容延伸到状态栏区域
-        window.apply {
-            setDecorFitsSystemWindows(false)
-            // 设置状态栏背景透明
-            statusBarColor = Color.TRANSPARENT
-            // 配置系统栏行为和外观
-            decorView.windowInsetsController?.apply {
-                // 系统栏行为：下拉状态栏时临时显示，滑动后自动隐藏（沉浸式常用）
-                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                // 配置状态栏图标颜色（明暗模式）
-                // Appearance.LIGHT_STATUS_BARS：深色图标（适合浅色背景）
-                // 0：浅色图标（适合深色背景）
-//                setSystemBarsAppearance(
-//                    WindowInsetsController.APPEARANCE_TRANSPARENT_CAPTION_BAR_BACKGROUND,
-//                    WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-//                )
-                // 配置导航栏
-                navigationBarColor = Color.TRANSPARENT
-                setSystemBarsAppearance(
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                    WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS,
-                )
-            }
-        }
+        systemBars.setDecorFitsSystemWindows(false)
+        systemBars.setNavigationBarColor(Color.TRANSPARENT)
+        systemBars.setStatusBarColor(Color.TRANSPARENT)
         super.onCreate(savedInstanceState)
-        // 定义主题变更监听
+        // 主题变更监听
         themeListener = { themeType ->
             setContent {
                 MJPlayerTheme(themeType = themeType) {
+                    // 根据主题类型设置系统栏颜色
+                    if (ThemeType.ADAPTIVE == themeType) {
+                        if (isSystemInDarkTheme()) {
+                            systemBars.isStatusBarLight = false
+                            systemBars.isNavigationBarLight = false
+                        } else {
+                            systemBars.isStatusBarLight = true
+                            systemBars.isNavigationBarLight = true
+                        }
+                    } else if (themeType == ThemeType.DARK) {
+                        systemBars.isStatusBarLight = false
+                        systemBars.isNavigationBarLight = false
+                    } else if (themeType in ThemeType.LIGHT..ThemeType.THEME_16) {
+                        systemBars.isStatusBarLight = true
+                        systemBars.isNavigationBarLight = true
+                    } else if (themeType in ThemeType.THEME_17..ThemeType.THEME_25) {
+                        systemBars.isStatusBarLight = true
+                        systemBars.isNavigationBarLight = false
+                    }
+
                     CompositionLocalProvider(
                         LocalOrientationController provides ::toggleOrientation,
                         LocalIsLandscape provides ::isLandscape,
-                        LocalSystemUiControl provides hiSystemUiControl,
+                        LocalSystemBarsController provides systemBars,
                     ) {
                         MJNaviGraph(modifier = Modifier.background(LocalColorScheme.current.background))
                     }

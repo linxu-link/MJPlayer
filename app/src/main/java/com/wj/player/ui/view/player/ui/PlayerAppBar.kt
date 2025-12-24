@@ -32,7 +32,7 @@ import com.wj.player.MJConstants
 import com.wj.player.ui.theme.dimens.LocalAppDimensions
 import com.wj.player.ui.view.IconTint
 import com.wj.player.ui.view.TextCaption
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
 import com.wj.player.ui.view.player.ExoplayerControllerImpl
 import com.wj.player.ui.view.player.base.PlayerState
 import com.wujia.toolkit.utils.HiLog

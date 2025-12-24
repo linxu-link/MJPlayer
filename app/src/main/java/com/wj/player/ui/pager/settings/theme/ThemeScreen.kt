@@ -40,7 +40,7 @@ import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextSmall
 import com.wj.player.ui.view.header.CommonTopAppBar
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
 import kotlin.math.ceil
 
 

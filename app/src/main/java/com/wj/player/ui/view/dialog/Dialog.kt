@@ -22,7 +22,8 @@ import androidx.compose.ui.window.DialogProperties
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.textstyle.LocalTypography
 import com.wj.player.ui.view.TextCaption
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
+
 
 @Composable
 fun MasterDialog(
@@ -38,7 +39,7 @@ fun MasterDialog(
         properties = DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
-            usePlatformDefaultWidth = true
+            usePlatformDefaultWidth = true,
         ),
     ) {
         Box(

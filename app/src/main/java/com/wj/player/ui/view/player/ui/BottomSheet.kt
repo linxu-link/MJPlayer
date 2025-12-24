@@ -42,7 +42,7 @@ import com.wj.player.R
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.TextTitle
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
 
 data class SheetOption(
     val title: String,

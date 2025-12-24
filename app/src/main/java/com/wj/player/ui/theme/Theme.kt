@@ -28,7 +28,6 @@ fun MJPlayerTheme(
     themeType: ThemeType = ThemeType.ADAPTIVE,
     content: @Composable () -> Unit,
 ) {
-
     val appDimensions = rememberAppDimensions()
 
     // 根据主题类型选择颜色方案

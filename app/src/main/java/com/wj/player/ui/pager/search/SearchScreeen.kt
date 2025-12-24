@@ -54,7 +54,7 @@ import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
 import com.wj.player.ui.view.dialog.MasterDialog
 import com.wj.player.ui.view.header.SearchTopAppBar
-import com.wj.player.ui.view.noRippleClickable
+import com.wujia.toolkit.compose.noRippleClickable
 import com.wj.player.ui.view.text.HighlightedText
 import com.wj.player.utils.VideoTimeUtils
 

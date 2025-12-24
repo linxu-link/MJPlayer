@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -16,10 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -27,13 +24,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.Player
 import androidx.media3.common.util.UnstableApi
 import com.wj.player.data.entity.Video
-import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
-import com.wj.player.ui.theme.configuration.LocalSystemUiControl
+import com.wj.player.ui.theme.configuration.LocalSystemBarsController
 import com.wj.player.ui.view.player.ExoplayerControllerImpl
-import com.wj.player.ui.view.player.SampleVideoPlayer
+import com.wj.player.ui.view.player.VideoPlayerUi
 import com.wj.player.ui.view.player.ui.PlayerUiConfig
+import com.wujia.toolkit.system.HiSystemBarsController
 
 @Composable
 fun PlayerScreen(
@@ -77,19 +74,16 @@ fun PlayerScreen(
         if (video != null) {
             VideoPlayerContent(
                 video = video,
-                isLoading = uiState.isLoading,
                 onBackClick = onBackClick,
             )
         }
     }
-
 }
 
 @OptIn(UnstableApi::class)
 @Composable
 private fun VideoPlayerContent(
     video: Video,
-    isLoading: Boolean,
     onBackClick: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -114,6 +108,7 @@ private fun VideoPlayerContent(
 
     val toggleOrientation = LocalOrientationController.current
     val isLandscape = LocalIsLandscape.current
+    val systemBars = LocalSystemBarsController.current
 
     BackHandler(enabled = true) {
         if (isLandscape()) {
@@ -123,15 +118,11 @@ private fun VideoPlayerContent(
             onBackClick()
         }
     }
-    val hiSystemBarsController = LocalSystemUiControl.current
-    val statusBarHeight = remember { hiSystemBarsController.getStatusBarHeight() }
-    val statusBarHeightDp = with(LocalDensity.current) { statusBarHeight.toDp() }
-
-    SampleVideoPlayer(
+    VideoPlayerUi(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .padding(top = statusBarHeightDp),
+            .systemBarsPadding(),
         controller = playerController,
         uiConfig = playerUiConfig,
         onBackClick = {
@@ -146,11 +137,10 @@ private fun VideoPlayerContent(
     )
 
     DisposableEffect(Unit) {
-        hiSystemBarsController.hideNavigationBar()
+        systemBars.setSystemBarsVisible(visible = true)
         onDispose {
+            systemBars.setSystemBarsVisible(visible = false)
             playerController.release()
-            hiSystemBarsController.showNavigationBar()
         }
     }
-
 }
