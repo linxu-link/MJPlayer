@@ -69,5 +69,7 @@
     <string name="search_history">搜索历史</string>
     <string name="clear_all">清空全部</string>
     <string name="input_hint">请输入关键词...</string>
+    <string name="clear_all_history_title">清空搜索记录</string>
+    <string name="clear_all_history_body">确认清空所有搜索记录？清空后将无法恢复</string>
 
 </resources>

@@ -1,5 +1,10 @@
 package com.wj.player.ui
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,6 +24,9 @@ import com.wj.player.ui.pager.settings.video.VideoScreen
 import com.wj.player.ui.pager.videolist.VideoListScreen
 import kotlinx.coroutines.CoroutineScope
 
+const val NAVIGATION_ANIMATION_DURATION = 450
+const val NAVIGATION_ANIMATION_FADE_DURATION = 300
+
 @Composable
 fun MJNaviGraph(
     modifier: Modifier,
@@ -29,6 +37,7 @@ fun MJNaviGraph(
         MJPlayerNavigationActions(navController)
     },
 ) {
+
     val currentNavBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = currentNavBackStackEntry?.destination?.route ?: startDestination
 
@@ -37,7 +46,31 @@ fun MJNaviGraph(
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        composable(MJPlayerDestinations.VIDEO_LIST_ROUTE) {
+
+        // [A] --(navigate to B)--> [A, B]
+        //- A 执行: exitTransition
+        //- B 执行: enterTransition
+
+        // [A, B] --(popBackStack)--> [A]
+        // - B 执行: popExitTransition
+        // - A 执行: popEnterTransition
+
+        composable(
+            route = MJPlayerDestinations.VIDEO_LIST_ROUTE,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    initialOffsetX = { it },
+                ) + fadeIn(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            exitTransition = null,
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
+        ) {
             VideoListScreen(
                 modifier = modifier,
                 onNavigateToSearch = {
@@ -58,7 +91,27 @@ fun MJNaviGraph(
             )
         }
 
-        composable(MJPlayerDestinations.SEARCH_ROUTE) { backStackEntry ->
+        composable(
+            route = MJPlayerDestinations.SEARCH_ROUTE,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    initialOffsetX = { it },
+                ) + fadeIn(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    targetOffsetX = { -it },
+                ) + fadeOut(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
+        ) { backStackEntry ->
             SearchScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
@@ -69,7 +122,20 @@ fun MJNaviGraph(
         }
 
         composable(
-            MJPlayerDestinations.PLAYER_ROUTE,
+            route = MJPlayerDestinations.PLAYER_ROUTE,
+            enterTransition = null,
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    targetOffsetX = { -it },
+                ) + fadeOut(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
             arguments = listOf(
                 navArgument(MJPlayerDestinationsArgs.VIDEO_ID_ARG) {
                     type = NavType.LongType; defaultValue = 0L
@@ -84,14 +150,54 @@ fun MJNaviGraph(
             )
         }
 
-        composable(MJPlayerDestinations.THEME_SETTINGS_ROUTE) {
+        composable(
+            route = MJPlayerDestinations.THEME_SETTINGS_ROUTE,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    initialOffsetX = { it },
+                ) + fadeIn(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    targetOffsetX = { -it },
+                ) + fadeOut(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
+        ) {
             ThemeScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
             )
         }
 
-        composable(MJPlayerDestinations.VIDEO_SETTINGS_ROUTE) {
+        composable(
+            route = MJPlayerDestinations.VIDEO_SETTINGS_ROUTE,
+            enterTransition = {
+                slideInHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    initialOffsetX = { it },
+                ) + fadeIn(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            exitTransition = {
+                slideOutHorizontally(
+                    animationSpec = tween(NAVIGATION_ANIMATION_DURATION),
+                    targetOffsetX = { -it },
+                ) + fadeOut(animationSpec = tween(NAVIGATION_ANIMATION_FADE_DURATION))
+            },
+            popEnterTransition = {
+                slideInHorizontally(initialOffsetX = { -it }) + fadeIn()
+            },
+            popExitTransition = {
+                slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+            },
+        ) {
             VideoScreen(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },

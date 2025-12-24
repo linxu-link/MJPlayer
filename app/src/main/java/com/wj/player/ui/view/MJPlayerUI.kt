@@ -4,7 +4,6 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -29,7 +28,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wj.player.R
 import com.wj.player.ui.theme.colors.LocalColorScheme
-import com.wj.player.ui.theme.dimens.LocalAppDimensions
 import com.wj.player.ui.theme.textstyle.LocalTypography
 import com.wujia.toolkit.utils.ktx.loadVideoThumbnailNative
 

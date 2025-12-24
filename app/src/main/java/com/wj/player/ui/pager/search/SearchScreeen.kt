@@ -1,21 +1,16 @@
 package com.wj.player.ui.pager.search
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -24,12 +19,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.AccountBox
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.DoNotDisturb
 import androidx.compose.material.icons.rounded.Close
@@ -41,41 +31,32 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil.compose.rememberAsyncImagePainter
 import com.wj.player.R
 import com.wj.player.data.entity.SearchHistory
 import com.wj.player.data.entity.Video
-import com.wj.player.data.source.local.video.room.VideoEntity
 import com.wj.player.ui.pager.videolist.VideoItemDesc
 import com.wj.player.ui.theme.colors.Colors
 import com.wj.player.ui.theme.colors.LocalColorScheme
 import com.wj.player.ui.view.ImageVideo
 import com.wj.player.ui.view.TextBody
 import com.wj.player.ui.view.TextCaption
+import com.wj.player.ui.view.dialog.MasterDialog
 import com.wj.player.ui.view.header.SearchTopAppBar
 import com.wj.player.ui.view.noRippleClickable
 import com.wj.player.ui.view.text.HighlightedText
 import com.wj.player.utils.VideoTimeUtils
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 @Composable
 fun SearchScreen(
@@ -87,6 +68,7 @@ fun SearchScreen(
     // 仅观察一个状态流（符合单一来源原则）
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiStateHolder = rememberSearchUiStateHolder() // 界面逻辑状态容器
+    var showClearHistoryDialog by remember { mutableStateOf(false) }
 
     // 状态驱动搜索框输入（关键词变化时同步输入框）
     LaunchedEffect(uiState) {
@@ -147,10 +129,26 @@ fun SearchScreen(
                         }
                     },
                     onDeleteClick = viewModel::onDeleteHistory,
-                    onClearAllClick = viewModel::onClearAllHistory,
+                    onClearAllClick = {
+                        showClearHistoryDialog = true
+                    },
                 )
             }
         }
+    }
+
+    if (showClearHistoryDialog) {
+        MasterDialog(
+            title = stringResource(R.string.clear_all_history_title),
+            body = stringResource(R.string.clear_all_history_body),
+            leftButtonText = stringResource(R.string.cancel),
+            rightButtonText = stringResource(R.string.confirm),
+            onDismiss = { showClearHistoryDialog = false },
+            onConfirm = {
+                showClearHistoryDialog = false
+                viewModel.onClearAllHistory()
+            },
+        )
     }
 }
 
@@ -174,9 +172,7 @@ private fun SearchHistoryList(
             if (inSearch) {
                 if (histories.isNotEmpty()) {
                     TextCaption(
-                        text = if (inSearch) stringResource(R.string.search_result) else stringResource(
-                            R.string.search_history,
-                        ),
+                        text = stringResource(R.string.search_result),
                         color = LocalColorScheme.current.textPrimaryInverse,
                     )
                 }
@@ -442,3 +438,4 @@ private fun EmptyHistoryHint(
         )
     }
 }
+

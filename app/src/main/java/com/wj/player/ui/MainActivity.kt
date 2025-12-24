@@ -18,7 +18,6 @@ import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
 import com.wj.player.ui.theme.configuration.LocalSystemUiControl
 import com.wujia.toolkit.system.HiSystemBarsController
-import com.wujia.toolkit.system.HiSystemBarsController.Companion.IMMERSIVE_STICKY
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
