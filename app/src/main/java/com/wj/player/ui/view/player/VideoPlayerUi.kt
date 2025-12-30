@@ -40,9 +40,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.media3.ui.PlayerView
 import com.wj.player.R
 import com.wj.player.ui.theme.MJPlayerTheme
-import com.wj.player.ui.view.player.base.IVideoPlayerController
-import com.wj.player.ui.view.player.base.PlaybackState
-import com.wj.player.ui.view.player.base.PlayerState
+import com.wj.media.interfaces.IVideoPlayerController
+import com.wj.media.controller.PlaybackState
+import com.wj.media.controller.PlayerState
 import com.wj.player.ui.view.player.ui.BottomSheet
 import com.wj.player.ui.view.player.ui.PlayerUiConfig
 import com.wj.player.ui.view.player.ui.SheetOption

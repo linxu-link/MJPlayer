@@ -10,6 +10,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import com.wujia.toolkit.HiAppGlobal
 
 /**
  * 系统栏控制器：统一管理状态栏 & 导航栏的显示、隐藏、样式
@@ -23,9 +24,25 @@ class HiSystemBarsController constructor(
     private val insetsController: WindowInsetsControllerCompat =
         WindowInsetsControllerCompat(window, decorView)
 
-    fun getInsetsController(): Int {
-       Wind
+    fun getStatusBarHeight(): Int {
+        val context = HiAppGlobal.getApplication()
+        var result = 0
+        val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
+    }
 
+    fun getNavigationBarHeight(): Int {
+        val context = HiAppGlobal.getApplication()
+        var result = 0
+        val resourceId =
+            context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+        if (resourceId > 0) {
+            result = context.resources.getDimensionPixelSize(resourceId)
+        }
+        return result
     }
 
     /**
@@ -137,7 +154,7 @@ class HiSystemBarsController constructor(
 
     fun setSystemBarsVisible(visible: Boolean) {
         if (visible) {
-
+            hideSystemBars()
         } else {
             showSystemBars()
         }

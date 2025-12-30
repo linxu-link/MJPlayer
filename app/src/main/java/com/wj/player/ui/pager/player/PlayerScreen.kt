@@ -4,7 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.annotation.OptIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -27,10 +28,10 @@ import com.wj.player.data.entity.Video
 import com.wj.player.ui.theme.configuration.LocalIsLandscape
 import com.wj.player.ui.theme.configuration.LocalOrientationController
 import com.wj.player.ui.theme.configuration.LocalSystemBarsController
-import com.wj.player.ui.view.player.ExoplayerControllerImpl
+import com.wj.media.controller.ExoplayerControllerImpl
 import com.wj.player.ui.view.player.VideoPlayerUi
 import com.wj.player.ui.view.player.ui.PlayerUiConfig
-import com.wujia.toolkit.system.HiSystemBarsController
+import com.wujia.toolkit.utils.px2dp
 
 @Composable
 fun PlayerScreen(
@@ -109,6 +110,12 @@ private fun VideoPlayerContent(
     val toggleOrientation = LocalOrientationController.current
     val isLandscape = LocalIsLandscape.current
     val systemBars = LocalSystemBarsController.current
+    val statusBarHeight: Dp = remember {
+        Dp(systemBars.getStatusBarHeight().px2dp())
+    }
+    val navigationBarHeight: Dp = remember {
+        Dp(systemBars.getNavigationBarHeight().px2dp())
+    }
 
     BackHandler(enabled = true) {
         if (isLandscape()) {
@@ -122,7 +129,10 @@ private fun VideoPlayerContent(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
-            .systemBarsPadding(),
+            .padding(
+                top = statusBarHeight,
+                bottom = navigationBarHeight,
+            ),
         controller = playerController,
         uiConfig = playerUiConfig,
         onBackClick = {

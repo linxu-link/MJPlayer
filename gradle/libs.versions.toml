@@ -1,6 +1,8 @@
 [versions]
-agp = "8.9.3"
-kotlin = "2.1.10"
+agp = "8.13.2"
+cloudy = "0.4.0"
+kotlin = "2.3.0"
+ksp = "2.2.20-2.0.4"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -8,29 +10,28 @@ espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 composeBom = "2025.12.01"
 appcompat = "1.7.1"
-navigation = "2.9.6"
 coroutines = "1.10.1"
 paging = "3.3.6"
-foundation = "1.8.3"
 activity = "1.12.0"
 constraintlayout = "2.2.1"
 workManager = "2.11.0"
 room = "2.8.3"
-ksp = "2.1.10-1.0.31"
 coil = "2.7.0"
 startup = "1.2.0"
 media3 = "1.8.0"
 datastore = "1.1.7"
-hilt = "2.54"
+hilt = "2.57.2"
 hiltExt = "1.3.0"
 hiltNavigationCompose = "1.3.0"
 timber = "5.0.1"
 accompanistPermissions = "0.30.0"
 accompanistWebview = "0.30.1"
+ui = "1.10.0"
 
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+compose-cloudy = { module = "com.github.skydoves:cloudy", version.ref = "cloudy" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -87,9 +88,10 @@ okhttpLoggingInterceptor = { group = "com.squareup.okhttp3", name = "logging-int
 # coil
 coil = { group = "io.coil-kt", name = "coil", version.ref = "coil" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-# media
-androix-media = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
+# mediaService
+androix-exoplayer = { group = "androidx.media3", name = "media3-exoplayer", version.ref = "media3" }
 androix-media-ui = { group = "androidx.media3", name = "media3-ui", version.ref = "media3" }
+androidx-media-session = { group = "androidx.media3", name = "media3-session", version.ref = "media3" }
 # dataStore
 data-store = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
 data-store-proto = { group = "androidx.datastore", name = "datastore-proto", version.ref = "datastore" }
@@ -104,6 +106,7 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 
 # other
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
 
 [bundles]
 compose = [
@@ -153,8 +156,9 @@ hilt = [
 ]
 
 media = [
-    "androix-media",
+    "androix-exoplayer",
     "androix-media-ui",
+    "androidx-media-session"
 ]
 net = [
     "retrofit",

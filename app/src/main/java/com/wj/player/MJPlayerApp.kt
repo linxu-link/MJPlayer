@@ -29,19 +29,19 @@ class MJPlayerApp : HiApplication() {
         HiLog.setDelegate(
             object : HiLog.HiLogDelegate {
                 override fun e(tag: String, msg: String, vararg obj: Any) {
-                    android.util.Log.e(PREFIX + tag, msg.format(*obj))
+                    android.util.Log.e(PREFIX + tag, msg)
                 }
 
                 override fun w(tag: String, msg: String, vararg obj: Any) {
-                    android.util.Log.w(PREFIX + tag, msg.format(*obj))
+                    android.util.Log.w(PREFIX + tag, msg)
                 }
 
                 override fun i(tag: String, msg: String, vararg obj: Any) {
-                    android.util.Log.i(PREFIX + tag, msg.format(*obj))
+                    android.util.Log.i(PREFIX + tag, msg)
                 }
 
                 override fun d(tag: String, msg: String, vararg obj: Any) {
-                    android.util.Log.d(PREFIX + tag, msg.format(*obj))
+                    android.util.Log.d(PREFIX + tag, msg)
                 }
 
                 override fun printErrStackTrace(

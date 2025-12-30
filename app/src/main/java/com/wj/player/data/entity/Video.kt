@@ -1,11 +1,12 @@
 package com.wj.player.data.entity
 
+import android.net.Uri
 import com.wj.player.data.source.local.video.room.VideoEntity
 
 /**
  * 视频领域模型：UI 和 ViewModel 直接使用
  * @param id 视频唯一标识（MediaStore 中的 ID）
- * @param path 视频文件路径
+ * @param uri 视频文件路径
  * @param title 视频标题
  * @param duration 视频时长（毫秒）
  * @param size 视频文件大小（字节）

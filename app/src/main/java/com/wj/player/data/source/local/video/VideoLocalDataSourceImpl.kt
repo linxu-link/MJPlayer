@@ -39,7 +39,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
     private val ioDispatcher: CoroutineDispatcher,
 ) : VideoLocalDataSource {
 
-    private   val projection = arrayOf(
+    private val projection = arrayOf(
         MediaStore.Video.Media._ID, // 视频ID
         MediaStore.Video.Media.TITLE, // 标题
         MediaStore.Video.Media.DATA, // 文件路径
@@ -86,23 +86,26 @@ class VideoLocalDataSourceImpl @Inject constructor(
         val videos = mutableListOf<VideoEntity>()
         context.contentResolver.query(videoUri, projection, null, null, sortOrder)?.use { cursor ->
             while (cursor.moveToNext()) {
-                val videoId = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
-                val path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA))
+                val videoId =
+                    cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID))
+
+                // 核心：通过videoId构建视频的标准Content Uri（推荐）
+                val uri = ContentUris.withAppendedId(videoUri, videoId)
 
                 // 新的缩略图获取方法
                 val thumbnailPath = getVideoThumbnailPath(context, videoId)
 
                 val video = VideoEntity(
                     id = videoId,
+                    path = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA)),
                     title = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE)),
-                    path = path,
                     duration = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION)),
                     size = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.SIZE)),
                     updateTime = cursor.getLong(cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED)),
                     thumbnailPath = thumbnailPath,
                     lastScanTime = System.currentTimeMillis(),
                 )
-                HiLog.e("video: ${video.thumbnailPath}")
+                HiLog.e("video uri: $uri")
                 videos.add(video)
             }
         }
@@ -141,7 +144,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
                 thumbnailProjection,
                 selection,
                 selectionArgs,
-                null
+                null,
             )?.use { thumbCursor ->
                 if (thumbCursor.moveToFirst()) {
                     thumbCursor.getString(thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA))
@@ -149,17 +152,18 @@ class VideoLocalDataSourceImpl @Inject constructor(
                     // 如果查询不到，返回内容 URI
                     ContentUris.withAppendedId(
                         MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                        videoId
+                        videoId,
                     ).toString()
                 }
             } ?: ContentUris.withAppendedId(
                 MediaStore.Video.Media.EXTERNAL_CONTENT_URI,
-                videoId
+                videoId,
             ).toString()
         } catch (e: Exception) {
             HiLog.e(TAG, "获取缩略图失败: ${e.message}")
             // 返回视频的内容 URI 作为备用
-            ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoId).toString()
+            ContentUris.withAppendedId(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, videoId)
+                .toString()
         }
     }
 
@@ -177,7 +181,7 @@ class VideoLocalDataSourceImpl @Inject constructor(
             thumbProjection,
             selection,
             selectionArgs,
-            null
+            null,
         )?.use { thumbCursor ->
             if (thumbCursor.moveToFirst()) {
                 thumbCursor.getString(thumbCursor.getColumnIndexOrThrow(MediaStore.Video.Thumbnails.DATA))

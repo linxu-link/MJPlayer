@@ -32,5 +32,7 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "MagicPlayer"
-include(":app")
-include(":toolkit")
+//include(":app")
+//include(":mediaService")
+//include(":toolkit")
+include(":player")

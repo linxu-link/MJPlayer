@@ -1,5 +1,6 @@
 package com.wj.player.ui
 
+import android.net.Uri
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -17,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.wj.player.ui.pager.TestScreen
 import com.wj.player.ui.pager.player.PlayerScreen
 import com.wj.player.ui.pager.search.SearchScreen
 import com.wj.player.ui.pager.settings.theme.ThemeScreen
@@ -30,9 +32,10 @@ const val NAVIGATION_ANIMATION_FADE_DURATION = 400
 @Composable
 fun MJNaviGraph(
     modifier: Modifier,
+    videoUri: Uri? = null,
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
-    startDestination: String = MJPlayerDestinations.VIDEO_LIST_ROUTE,
+    startDestination: String = "test",
     navActions: MJPlayerNavigationActions = remember(navController) {
         MJPlayerNavigationActions(navController)
     },
@@ -46,6 +49,12 @@ fun MJNaviGraph(
         startDestination = startDestination,
         modifier = modifier,
     ) {
+
+        composable(
+            route = "test",
+        ) {
+            TestScreen()
+        }
 
         // [A] --(navigate to B)--> [A, B]
         //- A 执行: exitTransition
@@ -202,6 +211,10 @@ fun MJNaviGraph(
                 modifier = modifier,
                 onNavigateBack = { navController.popBackStack() },
             )
+        }
+
+        if (videoUri != null) {
+            navActions.navigateToPlayer(1L)
         }
     }
 }

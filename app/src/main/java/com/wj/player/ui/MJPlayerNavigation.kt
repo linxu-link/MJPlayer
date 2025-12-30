@@ -1,5 +1,6 @@
 package com.wj.player.ui
 
+import android.net.Uri
 import androidx.navigation.NavHostController
 import com.wj.player.ui.MJPlayerDestinations.PLAYER_ROUTE
 import com.wj.player.ui.MJPlayerDestinationsArgs.VIDEO_ID_ARG
@@ -49,6 +50,10 @@ class MJPlayerNavigationActions(navController: NavHostController) {
 
     fun navigateToPlayer(videoId: Long) {
         _navController.navigate(PLAYER_ROUTE.replace("{$VIDEO_ID_ARG}", videoId.toString()))
+    }
+
+    fun navigateToPlayer(videoUri: Uri) {
+        _navController.navigate(PLAYER_ROUTE.replace("{$VIDEO_ID_ARG}", videoUri.toString()))
     }
 
     fun navigateToThemeSettings() {
