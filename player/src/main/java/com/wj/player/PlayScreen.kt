@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
@@ -30,10 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
 import androidx.media3.session.MediaController
 import androidx.media3.session.SessionToken
@@ -51,24 +53,34 @@ fun PlayerScreen(
     val isControllerReady = remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        Log.e("PlayScreen", "LaunchedEffect")
-        val sessionToken = SessionToken(context, ComponentName(context, PlaybackService::class.java))
+        val sessionToken =
+            SessionToken(context, ComponentName(context, PlaybackService::class.java))
         val controllerFuture = MediaController.Builder(context, sessionToken).buildAsync()
-        controllerFuture.addListener({
-            try {
-                val controller = controllerFuture.get()  // 在 try 中获取，捕获潜在异常
-                mediaController.value = controller
-                // 添加监听器观察播放状态（仅在就绪后添加）
-                controller.addListener(object : Player.Listener {
-                    override fun onIsPlayingChanged(playing: Boolean) { }
-                    override fun onPlaybackStateChanged(state: Int) { }
-                })
-                isControllerReady.value = true  // 标记就绪
-            } catch (e: Exception) {
-                Log.e("PlayerScreen", "MediaController build failed: ${e.message}")
-                // 可选：在这里处理 UI 反馈，如显示错误 Toast
-            }
-        }, ContextCompat.getMainExecutor(context))
+        controllerFuture.addListener(
+            {
+                try {
+                    val controller = controllerFuture.get()
+                    mediaController.value = controller
+                    // 添加监听器观察播放状态（仅在就绪后添加）
+                    controller.addListener(
+                        object : Player.Listener {
+                            override fun onIsPlayingChanged(playing: Boolean) {
+                                Log.e("PlayScreen", "onIsPlayingChanged: $playing")
+                            }
+
+                            override fun onPlaybackStateChanged(state: Int) {
+                                Log.e("PlayScreen", "onPlaybackStateChanged: $state")
+                            }
+                        },
+                    )
+                    isControllerReady.value = true  // 标记就绪
+                } catch (e: Exception) {
+                    Log.e("PlayerScreen", "MediaController build failed: ${e.message}")
+                    // 在这里处理 UI 反馈，如显示错误 Toast
+                }
+            },
+            ContextCompat.getMainExecutor(context),
+        )
     }
 
     DisposableEffect(Unit) {
@@ -78,7 +90,7 @@ fun PlayerScreen(
         }
     }
 
-    // 条件渲染：仅当控制器就绪时显示 PlayerControlView，否则显示加载 UI
+    // 仅当控制器就绪时显示 PlayerControlView，否则显示加载 UI
     if (isControllerReady.value && mediaController.value != null) {
         mediaController.value?.let { controller ->
             PlayerControlView(
@@ -99,7 +111,7 @@ fun PlayerScreen(
                     controller.seekTo(positionMs)
                 },
                 currentTime = controller.currentPosition,
-                duration = controller.duration
+                duration = controller.duration,
             )
         }
     } else {
@@ -113,38 +125,39 @@ fun PlayerScreen(
 @Composable
 fun PlayerControlView(
     modifier: Modifier = Modifier,
-    mediaPlayer: Player,
+    mediaPlayer: Player? = null,
     onPlayPause: () -> Unit,
     onSeek: (Long) -> Unit,
     currentTime: Long,
-    duration: Long
+    duration: Long,
 ) {
-    val isPlaying by remember { derivedStateOf { mediaPlayer.isPlaying } }
-    val playbackState by remember { derivedStateOf { mediaPlayer.playbackState } }
+    val isPlaying by remember { derivedStateOf { mediaPlayer?.isPlaying } }
+    val playbackState by remember { derivedStateOf { mediaPlayer?.playbackState } }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
+            .background(Color.Black.copy(alpha = 0.5f)),
     ) {
         // 顶部状态栏
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(8.dp),
         ) {
             Text(
                 text = if (playbackState == Player.STATE_BUFFERING) "Buffering..." else "",
                 color = Color.White,
-                modifier = Modifier.align(Alignment.TopStart)
+                modifier = Modifier.align(Alignment.TopStart),
             )
         }
 
         // 中间播放区域
         Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+                .height(200.dp)
+                .fillMaxWidth()
+                .padding(16.dp),
         ) {
             // 视频区域 (使用AndroidView嵌入PlayerView)
             AndroidView(
@@ -163,24 +176,24 @@ fun PlayerControlView(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
                 text = formatTime(currentTime),
-                color = Color.White
+                color = Color.White,
             )
 
             IconButton(onClick = onPlayPause) {
                 Icon(
-                    imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
+                    imageVector = if (isPlaying == true) Icons.Default.Pause else Icons.Default.PlayArrow,
                     contentDescription = "Play/Pause",
-                    tint = Color.White
+                    tint = Color.White,
                 )
             }
 
             Text(
                 text = formatTime(duration),
-                color = Color.White
+                color = Color.White,
             )
         }
 
@@ -192,7 +205,7 @@ fun PlayerControlView(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 8.dp)
+                .padding(top = 8.dp),
         )
     }
 }
@@ -202,4 +215,17 @@ private fun formatTime(milliseconds: Long): String {
     val minutes = seconds / 60
     val remainingSeconds = seconds % 60
     return "${minutes}:${if (remainingSeconds < 10) "0" else ""}$remainingSeconds"
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun PlayerControlViewPreview() {
+    PlayerControlView(
+        modifier = Modifier.fillMaxSize(),
+        mediaPlayer = null,
+        onPlayPause = {},
+        onSeek = {},
+        currentTime = 0,
+        duration = 100,
+    )
 }
