@@ -23,11 +23,33 @@ datastore = "1.1.7"
 hilt = "2.57.2"
 hiltExt = "1.3.0"
 hiltNavigationCompose = "1.3.0"
+hiltLifecycleViewModelCompose = "1.3.0-alpha02"
 timber = "5.0.1"
 accompanistPermissions = "0.30.0"
 accompanistWebview = "0.30.1"
 ui = "1.10.0"
+jetbrainsKotlinJvm = "2.3.0"
+material = "1.13.0"
 
+androidTools = "31.13.1"
+firebaseBom = "33.7.0"
+firebaseCrashlyticsPlugin = "3.0.6"
+firebasePerfPlugin = "2.0.2"
+uiTestJunit4 = "1.9.0-rc01"
+
+truth = "1.4.4"
+turbine = "1.2.0"
+androidxLintGradle = "1.0.0-alpha03"
+runner = "1.0.2"
+espressoCoreVersion = "3.0.2"
+appcompatV7 = "28.0.0"
+dependencyGuard = "0.5.0"
+androidDesugarJdkLibs = "2.1.4"
+jacoco = "0.8.12"
+
+androidxTracing = "1.3.0-alpha02"
+androidxUiAutomator = "2.3.0"
+androidxWindowManager = "1.3.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +59,9 @@ androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "j
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
 # Appcompat
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+# Tracing
+androidx-tracing-ktx = { group = "androidx.tracing", name = "tracing-ktx", version.ref = "androidxTracing" }
+androidx-window-core = { group = "androidx.window", name = "window-core", version.ref = "androidxWindowManager" }
 # Lifecycle
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
@@ -78,6 +103,7 @@ androidx-workmanager = { group = "androidx.work", name = "work-runtime-ktx", ver
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-gradlePlugin = { group = "androidx.room", name = "room-gradle-plugin", version.ref = "room" }
 # startUp
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 # retrofit
@@ -97,16 +123,69 @@ data-store = { group = "androidx.datastore", name = "datastore", version.ref = "
 data-store-proto = { group = "androidx.datastore", name = "datastore-proto", version.ref = "datastore" }
 data-store-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 # hilt
-hilt-android-core = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-android-testing = { group = "com.google.dagger", name = "hilt-android-testing", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
 hilt-ext-compiler = { group = "androidx.hilt", name = "hilt-compiler", version.ref = "hiltExt" }
 hilt-ext-work = { group = "androidx.hilt", name = "hilt-work", version.ref = "hiltExt" }
 hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-lifecycle-viewModelCompose = { group = "androidx.hilt", name = "hilt-lifecycle-viewmodel-compose", version.ref = "hiltLifecycleViewModelCompose" }
+
 
 # other
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }
+turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
+runner = { group = "com.android.support.test", name = "runner", version.ref = "runner" }
+espresso-core = { group = "com.android.support.test.espresso", name = "espresso-core", version.ref = "espressoCoreVersion" }
+appcompat-v7 = { group = "com.android.support", name = "appcompat-v7", version.ref = "appcompatV7" }
+
+android-desugarJdkLibs = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "androidDesugarJdkLibs" }
+
+# Dependencies of the included build-logic
+android-gradleApiPlugin = { group = "com.android.tools.build", name = "gradle-api", version.ref = "agp" }
+android-tools-common = { group = "com.android.tools", name = "common", version.ref = "androidTools" }
+compose-gradlePlugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
+firebase-crashlytics-gradlePlugin = { group = "com.google.firebase", name = "firebase-crashlytics-gradle", version.ref = "firebaseCrashlyticsPlugin" }
+firebase-performance-gradlePlugin = { group = "com.google.firebase", name = "perf-plugin", version.ref = "firebasePerfPlugin" }
+kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4", version.ref = "uiTestJunit4" }
+androidx-lint-gradle = { group = "androidx.lint", name = "lint-gradle", version.ref = "androidxLintGradle" }
+ksp-gradlePlugin = { group = "com.google.devtools.ksp", name = "com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
+
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+android-lint = { id = "com.android.lint", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+room = { id = "androidx.room", version.ref = "room" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
+dependencyGuard = { id = "com.dropbox.dependency-guard", version.ref = "dependencyGuard" }
+# Plugins defined by this project
+convention-dependency-graph = { id = "convention.dependency.graph" }
+convention-room = { id = "convention.room" }
+convention-lint = { id = "convention.lint" }
+convention-hilt = { id = "convention.hilt" }
+convention-android-test = { id = "convention.android.test" }
+convention-app = { id = "convention.app" }
+convention-app-compose = { id = "convention.app.compose" }
+convention-app-jacoco = { id = "convention.app.jacoco" }
+convention-app-flavors = { id = "convention.app.flavors" }
+convention-lib = { id = "convention.lib" }
+convention-lib-jvm = { id = "convention.lib.jvm" }
+convention-lib-compose = { id = "convention.lib.compose" }
+convention-lib-jacoco = { id = "convention.lib.jacoco" }
+convention-feature-impl = { id = "convention.feature.impl" }
+convention-feature-api = { id = "convention.feature.api" }
+
 
 [bundles]
 compose = [
@@ -150,7 +229,7 @@ datastore = [
     "data-store-preferences",
 ]
 hilt = [
-    "hilt-android-core",
+    "hilt-android",
     "hilt-android-testing",
     "hilt-navigation-compose",
 ]
@@ -166,11 +245,3 @@ net = [
     "okhttp",
     "okhttpLoggingInterceptor",
 ]
-
-[plugins]
-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-android-application = { id = "com.android.application", version.ref = "agp" }
-android-library = { id = "com.android.library", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

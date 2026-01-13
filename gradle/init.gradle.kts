@@ -1,11 +1,11 @@
 // 1. 定义工具版本
-val ktlintVersion = "0.50.0"  // ktlint 版本（Kotlin 代码风格检查工具）
+val ktlintVersion = "1.4.0"  // ktlint 版本（Kotlin 代码风格检查工具）
 
 // 2. 初始化脚本的依赖配置
 initscript {
     val spotlessVersion = "6.25.0"  // Spotless 插件版本（代码格式化插件）
     repositories {
-        mavenCentral()  // 从 Maven 仓库下载插件
+        mavenCentral()
     }
     dependencies {
         // 引入 Spotless 插件，用于后续在项目中应用

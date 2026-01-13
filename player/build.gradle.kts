@@ -1,22 +1,15 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.convention.app)
+    alias(libs.plugins.convention.app.compose)
+    alias(libs.plugins.convention.room)
+    alias(libs.plugins.convention.hilt)
 }
 
 android {
-    namespace = "com.wj.player"
-    compileSdk {
-        version = release(36)
-    }
-
     defaultConfig {
         applicationId = "com.wj.player"
-        minSdk = 24
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -32,18 +25,18 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-    buildFeatures {
-        compose = true
-    }
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_17
+//        targetCompatibility = JavaVersion.VERSION_17
+//    }
+//    kotlin {
+//        compilerOptions {
+//            jvmTarget.set(JvmTarget.JVM_17)
+//        }
+//    }
+//    buildFeatures {
+//        compose = true
+//    }
 }
 
 dependencies {
@@ -58,7 +51,6 @@ dependencies {
     // paging + room
     implementation(libs.bundles.paging)
     implementation(libs.bundles.room)
-    ksp(libs.room.compiler)
     // workManager
     implementation(libs.androidx.workmanager)
     // startUp
@@ -69,7 +61,6 @@ dependencies {
     implementation(libs.bundles.datastore)
     // hilt
     implementation(libs.bundles.hilt)
-    ksp(libs.hilt.compiler)
     // timber
     implementation(libs.timber)
     // coil

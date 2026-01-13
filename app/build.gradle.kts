@@ -1,21 +1,16 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
+    alias(libs.plugins.convention.app)
+    alias(libs.plugins.convention.app.compose)
+    alias(libs.plugins.convention.hilt)
 }
 android {
-    namespace = "com.wj.player"
-    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.wj.player"
-        minSdk = 26
         versionCode = 1
-        versionName = "1.0"
+        versionName = "0.1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -28,24 +23,24 @@ android {
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
+//    compileOptions {
+//        sourceCompatibility = JavaVersion.VERSION_17
+//        targetCompatibility = JavaVersion.VERSION_17
+//    }
+//
+//    kotlin {
+//        compilerOptions {
+//            jvmTarget.set(JvmTarget.JVM_17)
+//        }
+//    }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-
-    buildFeatures {
-        compose = true
-    }
-    lint {
-        abortOnError = false
-        checkReleaseBuilds = false
-    }
+//    buildFeatures {
+//        compose = true
+//    }
+//    lint {
+//        abortOnError = false
+//        checkReleaseBuilds = false
+//    }
 }
 
 
